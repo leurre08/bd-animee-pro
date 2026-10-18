@@ -1,26 +1,299 @@
-<script>
-// ══════════════════════════════════════════════════════════════════
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0a0a12">
+<link rel="manifest" href="manifest.json">
+<title>BD Animée Pro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+:root{
+--bg:#0a0a12;--bg2:#12121c;--bg3:#1a1a28;
+--panel:#16161f;--border:#2a2a3a;
+--ink:#e8e6e0;--dim:#8a8896;--faint:#4a4858;
+--acc:#e5c15a;--acc2:#e87b35;--acc3:#8b5fc4;
+--ok:#4a9d6a;--err:#c85a4a;--warn:#d4a017;
+--r:8px;--fs:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+--fm:ui-monospace,'SF Mono',Menlo,monospace;
+--safe-top:env(safe-area-inset-top,0px);
+--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{background:var(--bg);overscroll-behavior:none}
+body{font-family:var(--fs);background:var(--bg);color:var(--ink);min-height:100vh;padding:calc(1rem + var(--safe-top)) 1rem calc(14rem + var(--safe-bottom));font-size:15px;line-height:1.55;max-width:1200px;margin:0 auto}
+header{margin-bottom:1.2rem;text-align:center;padding:.8rem 0 1.2rem;position:relative}
+header::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:200px;height:1px;background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:.6}
+h1{font-size:1.7rem;font-weight:300;margin-bottom:.3rem;background:linear-gradient(135deg,var(--acc2),var(--acc),var(--acc3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{font-size:.82rem;color:var(--dim);font-style:italic}
+.version-tag{font-size:.65rem;color:var(--faint);font-family:var(--fm);margin-top:.3rem;letter-spacing:.1em}
+.toast{position:fixed;top:calc(1.5rem + var(--safe-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--bg3);color:var(--ink);border:1px solid var(--border);border-left:3px solid var(--acc);padding:.85rem 1.4rem;border-radius:var(--r);font-size:.85rem;box-shadow:0 8px 32px rgba(0,0,0,.7);z-index:9999;opacity:0;transition:transform .35s cubic-bezier(.2,.9,.3,1.2),opacity .35s;max-width:90vw;text-align:center;display:flex;align-items:center;gap:.6rem}
+.toast.visible{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.success{border-left-color:var(--ok)}.toast.error{border-left-color:var(--err)}.toast.warn{border-left-color:var(--warn)}
+.banner{background:var(--panel);border:1px solid var(--border);border-left:2px solid var(--acc);padding:1rem 1.1rem;border-radius:var(--r);font-size:.8rem;color:var(--dim);margin-bottom:1rem;line-height:1.6}
+.banner strong{color:var(--ink)}
+.banner .hl{color:var(--acc);font-weight:600}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.9rem}
+.panel.ok{box-shadow:inset 3px 0 0 var(--ok)}
+.panel h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
+input[type=password],input[type=text],textarea{width:100%;padding:.8rem .95rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:var(--fm);font-size:.78rem;margin-bottom:.5rem;-webkit-appearance:none}
+textarea{resize:vertical;min-height:80px;line-height:1.55;font-family:var(--fs);font-size:.85rem}
+input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(229,193,90,.1)}
+.btn{width:100%;padding:.85rem 1.1rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-size:.82rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-bottom:.6rem;transition:all .2s;font-family:inherit}
+.btn:hover:not(:disabled){background:var(--bg3);border-color:var(--acc)}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-primary{border-color:var(--acc);background:linear-gradient(135deg,rgba(232,123,53,.22),rgba(229,193,90,.16));color:var(--acc);font-size:1rem;padding:1.25rem;letter-spacing:.18em}
+.btn-stop{border-color:var(--err);color:var(--err);background:transparent;display:none}
+.btn-stop.visible{display:block}
+.btn-small{width:auto;padding:.5rem .85rem;font-size:.7rem;margin-bottom:0;display:inline-block}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem}
+.btn-row .btn{flex:1;min-width:120px;margin-bottom:0}
+.status{font-size:.74rem;padding:.55rem .85rem;border-radius:var(--r);margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem;background:var(--bg2);color:var(--dim);border:1px solid var(--border)}
+.status.ok{background:rgba(74,157,106,.08);color:var(--ok);border-color:rgba(74,157,106,.3)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--faint);flex-shrink:0}
+.status.ok .dot{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.hint{font-size:.7rem;color:var(--dim);margin-top:.4rem;line-height:1.5}
+.hint a{color:var(--acc);text-decoration:none}
+.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media(max-width:560px){.upload-grid{grid-template-columns:1fr}}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--r);padding:1rem .8rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg2);position:relative;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.upload-zone:active{border-color:var(--acc);background:rgba(229,193,90,.04)}
+.upload-zone.has-image{padding:0;border-style:solid;border-color:var(--acc)}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone .up-icon{font-size:1.8rem;opacity:.6;margin-bottom:.4rem}
+.upload-zone .up-text{font-size:.78rem;color:var(--dim);line-height:1.4}
+.upload-zone .up-text strong{color:var(--acc);display:block;margin-bottom:.2rem;font-size:.82rem}
+.upload-zone img{width:100%;height:100%;max-height:260px;object-fit:contain;display:block;background:#000;border-radius:4px}
+.upload-zone .remove-btn{position:absolute;top:.5rem;right:.5rem;background:rgba(200,90,74,.9);color:#fff;border:none;width:30px;height:30px;border-radius:50%;font-size:.9rem;cursor:pointer;z-index:10;display:flex;align-items:center;justify-content:center}
+.preset-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
+.preset{font-size:.7rem;padding:.4rem .8rem;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--dim);cursor:pointer;transition:all .2s;font-family:inherit}
+.preset.active{background:rgba(229,193,90,.12);border-color:var(--acc);color:var(--acc);font-weight:600}
+.cases-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.8rem;margin-top:.7rem}
+@media(max-width:560px){.cases-grid{grid-template-columns:1fr}}
+.case-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .3s;display:flex;flex-direction:column;position:relative}
+.case-card.generating{border-color:var(--acc)}
+.case-card.done{border-color:var(--ok)}
+.case-card.error{border-color:var(--err)}
+.case-card-header{padding:.5rem .7rem;font-size:.7rem;font-family:var(--fm);color:var(--dim);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:.5rem}
+.case-card-header .case-num{color:var(--acc);font-weight:700}
+.case-card-body{padding:.6rem;flex:1;display:flex;flex-direction:column}
+.case-card-body img,.case-card-body video{width:100%;border-radius:3px;background:#000;display:block;aspect-ratio:4/3;object-fit:cover}
+.case-placeholder{width:100%;aspect-ratio:4/3;background:#0a0a12;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:.7rem;font-family:var(--fm);flex-direction:column;gap:.5rem;text-align:center;padding:.5rem}
+.spinner-mini{width:14px;height:14px;border:2px solid rgba(229,193,90,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.case-dialogue{font-size:.72rem;color:var(--acc);margin-top:.5rem;font-style:italic;text-align:center;padding:.4rem .6rem;background:rgba(229,193,90,.05);border-radius:3px;border-left:2px solid var(--acc)}
+.step-bar{display:flex;gap:.3rem;margin-bottom:.9rem;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:.5rem 0;z-index:50;margin-left:-1rem;margin-right:-1rem;padding-left:1rem;padding-right:1rem;border-bottom:1px solid var(--border)}
+.step{flex:1;min-width:70px;padding:.5rem .3rem;border-radius:4px;background:var(--bg2);border:1px solid var(--border);font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;text-align:center;color:var(--faint);font-weight:600}
+.step.active{color:var(--acc);border-color:var(--acc);background:rgba(229,193,90,.06)}
+.step.done{color:var(--ok);border-color:rgba(74,157,106,.4);background:rgba(74,157,106,.05)}
+.player-overlay{position:fixed;inset:0;background:#000;z-index:2000;display:none;align-items:center;justify-content:center;cursor:pointer}
+.player-overlay.visible{display:flex}
+#player-canvas{display:block;max-width:100vw;max-height:100vh;background:#000}
+.player-hint{position:absolute;bottom:calc(1rem + var(--safe-bottom));left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font-size:.75rem;font-family:var(--fm);letter-spacing:.15em;text-transform:uppercase;pointer-events:none;opacity:1;transition:opacity .5s;background:rgba(0,0,0,.5);padding:.4rem .9rem;border-radius:3px}
+.player-hint.hidden{opacity:0}
+.debug-panel{position:fixed;bottom:0;left:0;right:0;height:180px;background:#05050a;border-top:2px solid var(--acc);z-index:200;display:flex;flex-direction:column;font-family:var(--fm);box-shadow:0 -8px 32px rgba(0,0,0,.7);transition:height .3s ease;padding-bottom:var(--safe-bottom)}
+.debug-panel.collapsed{height:36px}
+.debug-header{display:flex;justify-content:space-between;align-items:center;padding:.4rem .6rem;background:linear-gradient(90deg,#0f0f18,#1a1a28);border-bottom:1px solid var(--border);flex-shrink:0;user-select:none}
+.debug-tabs{display:flex;gap:.2rem}
+.debug-tab{background:transparent;border:1px solid var(--border);color:var(--dim);font-size:.62rem;padding:.3rem .5rem;border-radius:3px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;font-family:inherit}
+.debug-tab.active{color:var(--acc);border-color:var(--acc);background:rgba(229,193,90,.08)}
+.debug-actions{display:flex;gap:.25rem}
+.debug-actions button{background:transparent;border:1px solid var(--border);color:var(--dim);font-size:.58rem;padding:.25rem .5rem;border-radius:2px;cursor:pointer;font-family:inherit}
+.debug-actions button:hover{color:var(--acc);border-color:var(--acc)}
+.debug-body{flex:1;overflow-y:auto;padding:.5rem .7rem;font-size:.68rem;line-height:1.45;color:#c8c8d0;-webkit-overflow-scrolling:touch}
+.debug-body.hidden{display:none}
+.debug-entry{margin-bottom:.25rem;padding:.2rem .4rem;border-left:2px solid transparent;border-radius:2px;word-break:break-word}
+.debug-entry.info{border-left-color:var(--faint)}
+.debug-entry.success{border-left-color:var(--ok);background:rgba(74,157,106,.05)}
+.debug-entry.warn{border-left-color:var(--warn);background:rgba(212,160,23,.05)}
+.debug-entry.error{border-left-color:var(--err);background:rgba(200,90,74,.08);color:#f0a0a0}
+.debug-entry.api{border-left-color:var(--acc)}
+.debug-entry.response{border-left-color:var(--acc2)}
+.debug-time{color:var(--faint);margin-right:.4rem;font-size:.6rem}
+.debug-cat{color:var(--acc);font-weight:600;margin-right:.4rem;font-size:.6rem}
+.debug-msg{color:#d8d8e0}
+.journal-body .j-entry{display:flex;gap:.5rem;padding:.2rem 0;align-items:flex-start;border-bottom:1px dashed rgba(255,255,255,.04)}
+.journal-body .j-time{font-family:var(--fm);font-size:.65rem;color:var(--faint);flex-shrink:0;min-width:60px}
+.journal-body .j-icon{flex-shrink:0;width:16px}
+.journal-body .j-msg{color:#d8d8e0;flex:1;word-break:break-word;font-size:.75rem}
+.journal-body .j-entry.highlight .j-msg{color:var(--acc);font-weight:600}
+.journal-body .j-entry.success .j-msg{color:var(--ok)}
+.journal-body .j-entry.warn .j-msg{color:var(--warn)}
+.journal-body .j-entry.error .j-msg{color:var(--err)}
+.status-bar{position:fixed;bottom:180px;left:0;right:0;background:var(--bg3);border-top:1px solid var(--border);color:var(--ink);padding:.65rem 1rem;font-size:.75rem;display:flex;align-items:center;gap:.6rem;transform:translateY(200%);transition:transform .35s;z-index:150;font-family:var(--fm);box-shadow:0 -4px 20px rgba(0,0,0,.4);padding-bottom:calc(.65rem + var(--safe-bottom))}
+.status-bar.visible{transform:translateY(0)}
+.spinner{width:12px;height:12px;border:2px solid rgba(229,193,90,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+.hidden{display:none!important}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.5rem;margin-top:.5rem}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.5rem .6rem;text-align:center}
+.stat-box .val{font-family:var(--fm);font-size:1rem;color:var(--acc);font-weight:700}
+.stat-box .lbl{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:.15rem}
+.film-preview{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;font-size:.78rem;color:var(--dim);line-height:1.6}
+.film-preview strong{color:var(--acc)}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+<header>
+<h1>BD Animée Pro</h1>
+<p class="subtitle">Planche + Visage ? BD complète ? Animation ? Film</p>
+<p class="version-tag">v1.0 · Studio Auto</p>
+</header>
+<div class="panel" id="api-panel">
+<h2>?? Clé API Agnes <span class="btn-small" id="api-test-btn" style="font-size:.6rem;padding:.25rem .5rem;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:3px">Tester</span></h2>
+<input type="password" id="api-key-input" placeholder="sk-... (colle ici ta clé Agnes)" autocomplete="off" spellcheck="false">
+<div class="status" id="api-status-line"><span class="dot"></span><span id="api-status-text">Aucune clé API enregistrée</span></div>
+<div class="hint">Clé gratuite sur <a href="https://platform.agnes-ai.com" target="_blank" rel="noopener">platform.agnes-ai.com</a> ? Settings ? API Keys</div>
+</div>
+<div class="panel">
+<h2>?? Étape 1 — Charge les 2 photos</h2>
+<div class="upload-grid">
+<div class="upload-zone" id="zone-planche">
+<input type="file" accept="image/*" id="file-planche">
+<div class="up-icon">???</div>
+<div class="up-text"><strong>PLANCHE BD ORIGINALE</strong>Ta planche de BD complète</div>
+</div>
+<div class="upload-zone" id="zone-visage">
+<input type="file" accept="image/*" id="file-visage">
+<div class="up-icon">??</div>
+<div class="up-text"><strong>TON VISAGE</strong>Portrait face caméra</div>
+</div>
+</div>
+</div>
+<div class="panel">
+<h2>?? Étape 2 — Style BD</h2>
+<div class="preset-row" id="style-presets">
+<div class="preset active" data-style="franco-belge">???? Franco-belge</div>
+<div class="preset" data-style="realiste">?? Réaliste</div>
+<div class="preset" data-style="cartoon">?? Cartoon</div>
+<div class="preset" data-style="manga">???? Manga N&B</div>
+<div class="preset" data-style="aquarelle">?? Aquarelle</div>
+<div class="preset" data-style="encre">??? Encre noire</div>
+</div>
+</div><div class="panel">
+<h2>?? Étape 3 — Script (modifiable)</h2>
+<textarea id="script-input" rows="12">L'usinage et la transmission du savoir-faire
+
+Case 1 — L'atelier au réveil : Le personnage entre dans l'atelier, fraiseuse en arrière-plan, lumière jaune des néons.
+Dialogue : Salut l'équipe, on attaque la journée.
+
+Case 2 — Le geste du maître : Gros plan sur les mains du personnage qui règlent une pièce métallique sur le tour.
+Dialogue : Chaque pièce a sa propre voix. Écoute-la.
+
+Case 3 — Le doute de l'apprenti : Le jeune apprenti regarde le personnage, perplexe.
+Dialogue : Mais comment tu sais que c'est bon ?
+
+Case 4 — La leçon : Le personnage pose sa main sur l'épaule de l'apprenti.
+Dialogue : C'est l'expérience. 30 ans que je fais ça.
+
+Case 5 — Le geste transmis : L'apprenti reproduit le geste, le personnage observe. (Silence)
+
+Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en fond. (Silence)</textarea>
+<div class="hint">Format : "Case N — Titre : description" puis "Dialogue : texte" (optionnel). Le parser lit automatiquement.</div>
+</div>
+<div class="panel">
+<h2>?? Étape 4 — Paramètres</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+<div>
+<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Nombre de cases</label>
+<select id="nb-cases" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit;font-size:.82rem">
+<option value="4">4 cases</option>
+<option value="6" selected>6 cases</option>
+<option value="8">8 cases</option>
+<option value="9">9 cases</option>
+</select>
+</div>
+<div>
+<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Durée par vidéo</label>
+<select id="dur-video" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit;font-size:.82rem">
+<option value="121">5 secondes</option>
+<option value="145" selected>6 secondes</option>
+<option value="169">7 secondes</option>
+</select>
+</div>
+</div>
+<div style="margin-top:.6rem">
+<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Mode</label>
+<select id="mode-select" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit;font-size:.82rem">
+<option value="full" selected>?? Complet — Cases + Vidéos</option>
+<option value="images">??? Cases uniquement (rapide)</option>
+<option value="images+video1">??? Cases + 1ère vidéo (test)</option>
+</select>
+</div>
+</div>
+<button type="button" class="btn btn-primary" id="launch-btn" disabled>
+?? GÉNÉRER LA BD ANIMÉE
+<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">Tout-en-un · Cases ? Vidéos ? Film</span>
+</button>
+<button type="button" class="btn btn-stop" id="stop-btn">? Arrêter</button>
+<div class="step-bar" id="step-bar" style="display:none">
+<div class="step" data-step="analyse">1 · Analyse</div>
+<div class="step" data-step="images">2 · Cases</div>
+<div class="step" data-step="videos">3 · Vidéos</div>
+<div class="step" data-step="film">4 · Film</div>
+</div>
+<div class="panel hidden" id="stats-panel">
+<h2>?? Statistiques</h2>
+<div class="stats-grid" id="stats-grid">
+<div class="stat-box"><div class="val" id="stat-cases">0</div><div class="lbl">Cases</div></div>
+<div class="stat-box"><div class="val" id="stat-images">0</div><div class="lbl">Images</div></div>
+<div class="stat-box"><div class="val" id="stat-videos">0</div><div class="lbl">Vidéos</div></div>
+<div class="stat-box"><div class="val" id="stat-time">0s</div><div class="lbl">Durée</div></div>
+</div>
+</div>
+<div id="cases-container" style="display:none">
+<h2 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem">?? Cases générées</h2>
+<div class="cases-grid" id="cases-grid"></div>
+</div>
+<div id="film-container" class="panel" style="display:none">
+<h2>??? Film final</h2>
+<div class="film-preview" id="film-preview">En attente…</div>
+<div class="btn-row" style="margin-top:.8rem">
+<button type="button" class="btn btn-small" id="play-film-btn" style="flex:1;padding:.7rem">? Diffuser</button>
+<button type="button" class="btn btn-small" id="download-film-btn" style="flex:1;padding:.7rem">? Télécharger</button>
+</div>
+</div>
+<div class="status-bar" id="status-bar"><div class="spinner"></div><span id="status-text">Prêt</span></div>
+<div class="toast" id="toast"><span id="toast-icon">?</span><span id="toast-text">Message</span></div>
+<div class="player-overlay" id="player-overlay">
+<canvas id="player-canvas"></canvas>
+<div class="player-hint" id="player-hint">Échap ou clic pour quitter</div>
+</div>
+<div class="debug-panel" id="debug-panel">
+<div class="debug-header" id="debug-header">
+<div class="debug-tabs">
+<button type="button" class="debug-tab active" id="tab-journal">?? Journal</button>
+<button type="button" class="debug-tab" id="tab-tech">??? Technique</button>
+</div>
+<div class="debug-actions">
+<button type="button" id="debug-copy-btn">Copier</button>
+<button type="button" id="debug-clear-btn">Effacer</button>
+<button type="button" id="debug-collapse-btn">-</button>
+</div>
+</div>
+<div class="debug-body journal-body" id="journal-body"></div>
+<div class="debug-body hidden" id="tech-body"></div>
+</div><script>
+// ------------------------------------------------------------------
 // CONFIGURATION
-// ══════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------
 const API_BASE = 'https://apihub.agnes-ai.com/v1';
 const POLL_BASE = 'https://apihub.agnes-ai.com/agnesapi';
 const MODEL_TEXT = 'agnes-2.5-flash';
 const MODEL_IMAGE = 'agnes-image-2.1-flash';
 const MODEL_VIDEO = 'agnes-video-v2.0';
 const FRAME_RATE = 24;
-
 const IMAGE_PARALLEL = 3;
 const IMAGE_INTERVAL_MS = 3400;
 const VIDEO_FIRST_POLL_DELAY_SEC = 60;
 const VIDEO_POLL_INTERVALS = [8,8,12,12,20,20,25];
 const VIDEO_MAX_POLL_ATTEMPTS = 100;
-
 const API_KEY_STORAGE = 'bd_animee_pro_api_key';
 const DEBUG_MAX = 500;
-
-// ══════════════════════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════════════════════
 const state = {
   plancheBase64: null,
   visageBase64: null,
@@ -36,37 +309,27 @@ const state = {
   playRAF: null,
   startTime: 0
 };
-
-// ══════════════════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════════════════
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function setStatus(t){const b=document.getElementById('status-bar');const x=document.getElementById('status-text');if(!b||!x)return;if(t){b.classList.add('visible');x.textContent=t}else b.classList.remove('visible')}
 function nowTime(){return new Date().toLocaleTimeString('fr-FR',{hour12:false})}
-
 let toastTimeout=null;
 function showToast(msg,type='success',dur=2500){
   const t=document.getElementById('toast');const i=document.getElementById('toast-icon');const x=document.getElementById('toast-text');
   if(!t||!i||!x)return;
   t.classList.remove('visible','success','error','warn');void t.offsetWidth;
-  const ic={success:'✓',error:'✕',warn:'⚠'};
-  i.textContent=ic[type]||'✓';x.textContent=msg;
+  const ic={success:'?',error:'?',warn:'?'};
+  i.textContent=ic[type]||'?';x.textContent=msg;
   t.classList.add(type);
   requestAnimationFrame(()=>t.classList.add('visible'));
   if(toastTimeout)clearTimeout(toastTimeout);
   toastTimeout=setTimeout(()=>t.classList.remove('visible'),dur);
 }
-</script>
-<script>
-// ══════════════════════════════════════════════════════════════════
-// JOURNAL NARRATIF
-// ══════════════════════════════════════════════════════════════════
 function journalLog(msg,level){
   level = level || 'info';
   const body = document.getElementById('journal-body');
   if(!body) return;
-  const icons = { info:'·', highlight:'▶', success:'✅', warn:'⚠️', error:'❌', image:'🖼️', video:'🎬', film:'🎞️', api:'📡' };
+  const icons = { info:'·', highlight:'?', success:'?', warn:'??', error:'?', image:'???', video:'??', film:'???', api:'??' };
   const icon = icons[level] || '·';
   const entry = document.createElement('div');
   entry.className = 'j-entry ' + level;
@@ -75,10 +338,6 @@ function journalLog(msg,level){
   body.scrollTop = body.scrollHeight;
   while(body.children.length > DEBUG_MAX) body.removeChild(body.firstChild);
 }
-
-// ══════════════════════════════════════════════════════════════════
-// DEBUG TECHNIQUE
-// ══════════════════════════════════════════════════════════════════
 let debugCount=0,debugEntries=[],debugCollapsed=false,currentTab='journal';
 function debugLog(level,cat,msg,data){
   const body=document.getElementById('tech-body');if(!body)return;
@@ -129,7 +388,7 @@ function toggleDebug(){
   if(!p||!b)return;
   debugCollapsed=!debugCollapsed;
   p.classList.toggle('collapsed',debugCollapsed);
-  b.textContent=debugCollapsed?'+':'−';
+  b.textContent=debugCollapsed?'+':'-';
 }
 function switchTab(tab){
   currentTab=tab;
@@ -141,17 +400,13 @@ function switchTab(tab){
   if(tab==='journal'){j.classList.remove('hidden');t.classList.add('hidden');tj.classList.add('active');tt.classList.remove('active')}
   else{t.classList.remove('hidden');j.classList.add('hidden');tt.classList.add('active');tj.classList.remove('active');t.scrollTop=t.scrollHeight}
 }
-</script><script>
-// ══════════════════════════════════════════════════════════════════
-// CLÉ API
-// ══════════════════════════════════════════════════════════════════
 function getKey(){try{return(localStorage.getItem(API_KEY_STORAGE)||'').trim()}catch(e){return''}}
 function saveKey(){
   const v=document.getElementById('api-key-input').value.trim();
   if(!v){localStorage.removeItem(API_KEY_STORAGE);updateApiPanel();showToast('Clé supprimée','warn');return}
   if(!v.startsWith('sk-')){if(!confirm('La clé ne commence pas par "sk-". Sauvegarder quand même ?'))return}
   try{localStorage.setItem(API_KEY_STORAGE,v)}catch(e){}
-  updateApiPanel();showToast('Clé enregistrée ✓','success');
+  updateApiPanel();showToast('Clé enregistrée ?','success');
   debugLog('success','API','Clé : '+v.slice(0,8)+'…'+v.slice(-4));
   journalLog('Clé API enregistrée.','success');
 }
@@ -173,10 +428,6 @@ function updateApiPanel(){
   }
   updateLaunchBtn();
 }
-
-// ══════════════════════════════════════════════════════════════════
-// UPLOAD IMAGES
-// ══════════════════════════════════════════════════════════════════
 function fileToBase64(file){
   return new Promise((res,rej)=>{
     const r=new FileReader();
@@ -216,7 +467,7 @@ function renderUpload(type,base64){
   const zone=document.getElementById('zone-'+type);
   if(!zone)return;
   zone.classList.add('has-image');
-  zone.innerHTML='<img src="'+base64+'" alt="'+type+'"><button class="remove-btn" data-remove="'+type+'">✕</button>';
+  zone.innerHTML='<img src="'+base64+'" alt="'+type+'"><button class="remove-btn" data-remove="'+type+'">?</button>';
   zone.querySelector('[data-remove]').addEventListener('click',e=>{
     e.stopPropagation();
     if(type==='planche')state.plancheBase64=null;
@@ -231,7 +482,7 @@ function resetUpload(type){
   zone.classList.remove('has-image');
   const isPlanche=type==='planche';
   zone.innerHTML='<input type="file" accept="image/*" id="file-'+type+'">'+
-    '<div class="up-icon">'+(isPlanche?'🖼️':'👤')+'</div>'+
+    '<div class="up-icon">'+(isPlanche?'???':'??')+'</div>'+
     '<div class="up-text"><strong>'+(isPlanche?'PLANCHE BD ORIGINALE':'TON VISAGE')+'</strong>'+(isPlanche?'Ta planche de BD complète':'Portrait face caméra')+'</div>';
   bindUpload(type);
 }
@@ -240,10 +491,6 @@ function bindUpload(type){
   if(!input)return;
   input.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)handleFile(f,type)});
 }
-
-// ══════════════════════════════════════════════════════════════════
-// BOUTON LAUNCH
-// ══════════════════════════════════════════════════════════════════
 function updateLaunchBtn(){
   const btn=document.getElementById('launch-btn');
   if(!btn)return;
@@ -251,16 +498,12 @@ function updateLaunchBtn(){
   const hasPlanche=!!state.plancheBase64;
   const hasVisage=!!state.visageBase64;
   btn.disabled=!hasKey||!hasPlanche||!hasVisage||state.isRunning;
-  if(state.isRunning)btn.innerHTML='⏳ Génération en cours…';
-  else if(!hasKey)btn.innerHTML='🔑 Ajoutez votre clé API';
-  else if(!hasPlanche)btn.innerHTML='🖼️ Chargez la planche BD';
-  else if(!hasVisage)btn.innerHTML='👤 Chargez votre visage';
-  else btn.innerHTML='🎬 GÉNÉRER LA BD ANIMÉE<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">'+state.nbCases+' cases · '+Math.round(state.durVideo/24)+'s par vidéo</span>';
+  if(state.isRunning)btn.innerHTML='? Génération en cours…';
+  else if(!hasKey)btn.innerHTML='?? Ajoutez votre clé API';
+  else if(!hasPlanche)btn.innerHTML='??? Chargez la planche BD';
+  else if(!hasVisage)btn.innerHTML='?? Chargez votre visage';
+  else btn.innerHTML='?? GÉNÉRER LA BD ANIMÉE<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">'+state.nbCases+' cases · '+Math.round(state.durVideo/24)+'s par vidéo</span>';
 }
-</script><script>
-// ══════════════════════════════════════════════════════════════════
-// API FETCH
-// ══════════════════════════════════════════════════════════════════
 async function apiFetch(url,options,label,maxAttempts){
   options=options||{};
   label=label||'API';
@@ -282,13 +525,13 @@ async function apiFetch(url,options,label,maxAttempts){
       }
       if(res.status===429){
         const wait=Math.min(120,20+attempt*20);
-        debugLog('warn','RATELIMIT','429 → attente '+wait+'s');
+        debugLog('warn','RATELIMIT','429 ? attente '+wait+'s');
         setStatus('Limite API — attente '+wait+'s');
         await sleep(wait*1000);continue;
       }
       if([500,502,503,504,520].includes(res.status)){
         const wait=Math.min(60,8+attempt*6);
-        debugLog('warn','SERVICE','HTTP '+res.status+' → attente '+wait+'s');
+        debugLog('warn','SERVICE','HTTP '+res.status+' ? attente '+wait+'s');
         await sleep(wait*1000);continue;
       }
       const wait=Math.min(60,6+attempt*5);
@@ -298,17 +541,12 @@ async function apiFetch(url,options,label,maxAttempts){
       if(/^HTTP (4\d\d)/.test(e.message))throw e;
       lastErr=e;
       const wait=Math.min(45,4+attempt*4);
-      debugLog('warn','NETWORK',e.message+' → retry '+wait+'s');
+      debugLog('warn','NETWORK',e.message+' ? retry '+wait+'s');
       await sleep(wait*1000);
     }
   }
   throw lastErr||new Error('Échec '+label);
-}
-
-// ══════════════════════════════════════════════════════════════════
-// PARSER SCRIPT
-// ══════════════════════════════════════════════════════════════════
-function parseScript(text){
+}function parseScript(text){
   const cases=[];
   const lines=text.split('\n');
   let currentCase=null;
@@ -335,10 +573,6 @@ function parseScript(text){
   debugLog('info','SCRIPT',cases.length+' cases parsées');
   return cases;
 }
-
-// ══════════════════════════════════════════════════════════════════
-// STYLE PROMPTS
-// ══════════════════════════════════════════════════════════════════
 function getStylePrompt(style){
   const styles={
     'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors, clean Hergé/Uderzo inspired rendering, comic book panel with a thin black border',
@@ -350,6 +584,432 @@ function getStylePrompt(style){
   };
   return styles[style]||styles['franco-belge'];
 }
+async function generateCaseImage(caseData, index, total){
+  const stylePrompt=getStylePrompt(state.selectedStyle);
+  const dialogue=caseData.dialogue?'Dialogue (in French, inside a speech bubble at the bottom): « '+caseData.dialogue+' »':'Silent panel (no speech bubble).';
+  const prompt=[
+    'CREATE ONE COMIC BOOK PANEL in the following style:',
+    stylePrompt,
+    '',
+    'PANEL CONTENT (French bande dessinée scene):',
+    'Scene: '+caseData.desc,
+    dialogue,
+    '',
+    'CHARACTER (must match the provided reference face EXACTLY):',
+    '- The main character is a middle-aged man with a bald head, thin-rimmed round glasses, short stubble beard, calm neutral expression, wearing a black technical jacket with a yellow mountain logo on the left shoulder and a zipped high collar.',
+    '- His face is IDENTICAL to the reference photo. Same glasses, same beard, same head shape.',
+    '- Rendered in the comic book style above (flat colors, thick outlines).',
+    '',
+    'OTHER CHARACTERS (if the scene mentions an apprentice):',
+    '- A young apprentice in blue overalls, dark hair, curious expression.',
+    '',
+    'SETTING: precision machine workshop, CNC machines, metallic parts on workbenches, warm yellow fluorescent lighting, industrial atmosphere.',
+    '',
+    'STRICT RULES:',
+    '- ONE single panel only. Panel number '+index+' of '+total+'.',
+    '- If dialogue provided, add ONE speech bubble at the bottom with the EXACT French text.',
+    '- No text outside the speech bubble. No watermarks. No signature.',
+    '- Respect the art style faithfully.',
+    '- The main character face MUST be recognizable as the reference photo.'
+  ].join('\n');
+  const body={
+    model:MODEL_IMAGE,
+    prompt:prompt,
+    n:1,
+    size:'1K',
+    ratio:'4:3',
+    extra_body:{
+      image:[state.visageBase64],
+      response_format:'url'
+    }
+  };
+  const res=await apiFetch(API_BASE+'/images/generations',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  },'Image Case '+index);
+  const data=await res.json();
+  const item=data.data&&data.data[0];
+  if(!item)throw new Error('Pas d\'image retournée');
+  const url=item.url||(item.b64_json?'data:image/png;base64,'+item.b64_json:null);
+  if(!url)throw new Error('Format image inconnu');
+  return url;
+}
+async function createVideoTask(prompt,imageUrl,duration){
+  const body={model:MODEL_VIDEO,prompt:prompt,image:imageUrl,num_frames:duration,frame_rate:FRAME_RATE};
+  const res=await apiFetch(API_BASE+'/videos',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body)
+  },'Vidéo');
+  const data=await res.json();
+  const vid=data.video_id||data.id||data.task_id;
+  if(!vid)throw new Error('Pas de video_id');
+  return vid;
+}
+async function pollVideo(videoId,onProgress){
+  let rem=VIDEO_FIRST_POLL_DELAY_SEC;
+  while(rem>0){
+    if(state.stopRequested)throw new Error('Arrêt demandé');
+    onProgress('Préparation — '+rem+'s');
+    await sleep(1000);rem--;
+  }
+  for(let attempt=0;attempt<VIDEO_MAX_POLL_ATTEMPTS;attempt++){
+    if(state.stopRequested)throw new Error('Arrêt demandé');
+    if(attempt>0){
+      const idx=Math.min(attempt-1,VIDEO_POLL_INTERVALS.length-1);
+      let r=VIDEO_POLL_INTERVALS[idx];
+      while(r>0){if(state.stopRequested)throw new Error('Arrêt demandé');onProgress('Création — '+r+'s');await sleep(1000);r--}
+    }
+    const url=POLL_BASE+'?video_id='+encodeURIComponent(videoId)+'&model_name='+encodeURIComponent(MODEL_VIDEO);
+    const res=await apiFetch(url,{method:'GET'},'Polling');
+    const d=await res.json();
+    const status=d.status||'unknown';
+    const progress=d.progress||0;
+    onProgress('Création — '+progress+'%');
+    if(status==='completed'||status==='succeeded'||status==='done'){
+      const videoUrl=(d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
+      if(!videoUrl)throw new Error('Terminé mais pas d\'URL');
+      return videoUrl;
+    }
+    if(status==='failed'||status==='error'||status==='cancelled')throw new Error('Échec ('+status+')');
+  }
+  throw new Error('Timeout');
+}
+function renderCases(){
+  const grid=document.getElementById('cases-grid');
+  const cont=document.getElementById('cases-container');
+  if(!grid||!cont)return;
+  cont.style.display='block';
+  grid.innerHTML=state.cases.map((c,i)=>{
+    let body='';
+    let cls='generating';
+    if(c.status==='pending')body='<div class="case-placeholder">En attente…</div>';
+    else if(c.status==='loading-img')body='<div class="case-placeholder"><div class="spinner-mini"></div><span>Image…</span></div>';
+    else if(c.status==='done-img'){body='<img src="'+c.imageUrl+'" alt="Case '+(i+1)+'">';cls='done'}
+    else if(c.status==='loading-vid')body='<img src="'+c.imageUrl+'" style="opacity:.5"><div class="case-placeholder" style="position:absolute;inset:0;background:transparent"><div class="spinner-mini"></div><span>'+esc(c.progress||'Vidéo…')+'</span></div>';
+    else if(c.status==='done-vid'){body='<video src="'+c.videoUrl+'" controls preload="metadata" playsinline></video>';cls='done'}
+    else if(c.status==='error'){body='<div class="case-placeholder" style="color:var(--err)">Erreur : '+esc(c.error||'')+'</div>';cls='error'}
+    return '<div class="case-card '+cls+'" style="position:relative">'+
+      '<div class="case-card-header"><span class="case-num">Case '+(i+1)+'</span><span>'+(c.status==='done-vid'?'?':c.status==='error'?'?':'…')+'</span></div>'+
+      '<div class="case-card-body">'+body+
+      (c.dialogue?'<div class="case-dialogue">« '+esc(c.dialogue)+' »</div>':'')+
+      '</div></div>';
+  }).join('');
+}
+function setStep(step){
+  const bar=document.getElementById('step-bar');
+  if(bar)bar.style.display='flex';
+  const order=['analyse','images','videos','film'];
+  const idx=order.indexOf(step);
+  document.querySelectorAll('.step').forEach(el=>{
+    el.classList.remove('active','done');
+    const i=order.indexOf(el.dataset.step);
+    if(i<idx)el.classList.add('done');
+    else if(i===idx)el.classList.add('active');
+  });
+}
+function updateStats(){
+  const sp=document.getElementById('stats-panel');
+  if(sp)sp.classList.remove('hidden');
+  const cases=state.cases.length;
+  const imgs=state.cases.filter(c=>c.imageUrl).length;
+  const vids=state.cases.filter(c=>c.videoUrl).length;
+  const elapsed=Math.round((Date.now()-state.startTime)/1000);
+  const el1=document.getElementById('stat-cases');
+  const el2=document.getElementById('stat-images');
+  const el3=document.getElementById('stat-videos');
+  const el4=document.getElementById('stat-time');
+  if(el1)el1.textContent=cases;
+  if(el2)el2.textContent=imgs;
+  if(el3)el3.textContent=vids;
+  if(el4)el4.textContent=elapsed+'s';
+}
+async function runFullPipeline(){
+  if(state.isRunning)return;
+  if(!getKey()){showToast('Ajoutez votre clé API','error');return}
+  if(!state.plancheBase64||!state.visageBase64){showToast('Chargez les 2 photos','error');return}
+  const scriptText=document.getElementById('script-input').value;
+  state.parsedScript=parseScript(scriptText);
+  if(state.parsedScript.length===0){showToast('Script vide ou invalide','error');return}
+  state.nbCases=Math.min(state.parsedScript.length,parseInt(document.getElementById('nb-cases').value,10)||6);
+  state.durVideo=parseInt(document.getElementById('dur-video').value,10)||145;
+  state.mode=document.getElementById('mode-select').value;
+  state.parsedScript=state.parsedScript.slice(0,state.nbCases);
+  state.isRunning=true;
+  state.stopRequested=false;
+  state.startTime=Date.now();
+  state.cases=state.parsedScript.map(c=>({...c,status:'pending',imageUrl:null,videoUrl:null,progress:null,error:null}));
+  document.getElementById('stop-btn').classList.add('visible');
+  document.getElementById('launch-btn').disabled=true;
+  document.getElementById('cases-container').style.display='block';
+  document.getElementById('film-container').style.display='none';
+  renderCases();
+  setStep('analyse');
+  journalLog('Génération lancée. '+state.nbCases+' cases.','highlight');
+  showToast('Génération lancée','success');
+  try{
+    setStatus('Étape 1/4 — Analyse…');
+    await sleep(800);
+    updateStats();
+    setStep('images');
+    setStatus('Étape 2/4 — Cases BD…');
+    const queue=[];
+    let running=0;
+    let lastStart=0;
+    let completedImages=0;
+    const processNext=async()=>{
+      if(running>=IMAGE_PARALLEL)return;
+      const job=queue.shift();
+      if(!job)return;
+      const wait=Math.max(0,lastStart+IMAGE_INTERVAL_MS-Date.now());
+      if(wait>0)await sleep(wait);
+      running++;lastStart=Date.now();
+      try{await job()}catch(e){}
+      running--;
+      if(queue.length)processNext();
+    };
+    const imagePromises=state.cases.map((c,i)=>new Promise(resolve=>{
+      queue.push(async()=>{
+        if(state.stopRequested){resolve();return}
+        c.status='loading-img';renderCases();
+        try{
+          const url=await generateCaseImage(c,i+1,state.cases.length);
+          c.imageUrl=url;c.status='done-img';
+          renderCases();updateStats();
+          completedImages++;
+          journalLog('Case '+(i+1)+' générée ('+completedImages+'/'+state.cases.length+').','image');
+        }catch(e){
+          c.status='error';c.error=e.message;
+          renderCases();
+          journalLog('Case '+(i+1)+' échouée.','error');
+        }
+        resolve();
+      });
+      processNext();
+    }));
+    for(let i=0;i<Math.min(IMAGE_PARALLEL,queue.length);i++)processNext();
+    await Promise.allSettled(imagePromises);
+    if(state.stopRequested)throw new Error('Arrêt demandé');
+    if(state.mode==='images'){
+      setStep('film');
+      setStatus('? Cases prêtes ?');
+      showToast('Cases générées ?','success');
+      await sleep(3000);
+      setStatus(null);
+      state.isRunning=false;
+      document.getElementById('stop-btn').classList.remove('visible');
+      updateLaunchBtn();
+      return;
+    }
+    setStep('videos');
+    setStatus('Étape 3/4 — Vidéos…');
+    let completedVideos=0;
+    const maxVideos = state.mode==='images+video1' ? 1 : state.cases.length;
+    for(let i=0;i<state.cases.length;i++){
+      if(state.stopRequested)break;
+      if(completedVideos>=maxVideos)break;
+      const c=state.cases[i];
+      if(c.status!=='done-img')continue;
+      c.status='loading-vid';c.progress='Initialisation…';
+      renderCases();
+      setStatus('Vidéo '+(i+1)+'/'+state.cases.length);
+      try{
+        const videoPrompt=[
+          'Animate this EXACT comic book panel as a subtle motion comic.',
+          'The character must remain IDENTICAL: same face, same expression, same clothes, same position, same composition.',
+          'Add only subtle animation: slow camera push-in (5% zoom), slight breathing motion.',
+          'Style: animated franco-belgian bande dessinée, ligne claire.',
+          'No 3D. No anime. No realistic rendering. Keep the flat comic colors.',
+          'No music. Duration: '+Math.round(state.durVideo/24)+' seconds.'
+        ].join('\n');
+        const vid=await createVideoTask(videoPrompt,c.imageUrl,state.durVideo);
+        const videoUrl=await pollVideo(vid,(prog)=>{
+          c.progress=prog;
+          renderCases();
+          setStatus('Vidéo '+(i+1)+'/'+state.cases.length+' — '+prog);
+        });
+        c.videoUrl=videoUrl;c.status='done-vid';
+        renderCases();updateStats();
+        completedVideos++;
+        journalLog('Case '+(i+1)+' animée.','video');
+        showToast('Case '+(i+1)+' animée ?','success');
+      }catch(e){
+        if(e.message==='Arrêt demandé')break;
+        c.status='error';c.error=e.message;
+        renderCases();
+      }
+      if(completedVideos<maxVideos && i<state.cases.length-1 && !state.stopRequested){
+        for(let r=62;r>0;r--){
+          if(state.stopRequested)break;
+          setStatus('Pause '+r+'s');
+          await sleep(1000);
+        }
+      }
+    }
+    setStep('film');
+    setStatus('Étape 4/4 — Finalisation…');
+    await sleep(800);
+    const readyCases=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
+    const filmContainer=document.getElementById('film-container');
+    const filmPreview=document.getElementById('film-preview');
+    if(readyCases.length>0){
+      if(filmContainer)filmContainer.style.display='block';
+      if(filmPreview)filmPreview.innerHTML='<strong>? '+readyCases.length+'/'+state.cases.length+' cases animées</strong><br>Clique sur Diffuser.';
+      const pfb=document.getElementById('play-film-btn');
+      const dfb=document.getElementById('download-film-btn');
+      if(pfb)pfb.disabled=false;
+      if(dfb)dfb.disabled=false;
+      setStatus('? BD animée prête ?');
+      showToast(readyCases.length+' cases animées ?','success');
+    }
+    await sleep(3000);
+    setStatus(null);
+  }catch(e){
+    if(e.message==='Arrêt demandé'){
+      setStatus('Arrêté');
+      await sleep(1500);setStatus(null);
+    } else {
+      setStatus('Erreur : '+e.message.slice(0,60));
+      showToast('Erreur : '+e.message.slice(0,50),'error',4000);
+      await sleep(3000);setStatus(null);
+    }
+  }
+  state.isRunning=false;
+  state.stopRequested=false;
+  document.getElementById('stop-btn').classList.remove('visible');
+  updateLaunchBtn();
+}
+async function playFilm(){
+  const ready=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
+  if(!ready.length){showToast('Aucune vidéo','error');return}
+  if(state.isPlayingFilm)return;
+  state.isPlayingFilm=true;
+  updateLaunchBtn();
+  const overlay=document.getElementById('player-overlay');
+  const canvas=document.getElementById('player-canvas');
+  const hint=document.getElementById('player-hint');
+  if(!overlay||!canvas)return;
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.round(window.innerWidth*dpr);
+  canvas.height=Math.round(window.innerHeight*dpr);
+  canvas.style.width=window.innerWidth+'px';
+  canvas.style.height=window.innerHeight+'px';
+  const ctx=canvas.getContext('2d');
+  overlay.classList.add('visible');
+  if(hint){hint.classList.remove('hidden');setTimeout(()=>hint.classList.add('hidden'),3000)}
+  for(let i=0;i<ready.length;i++){
+    if(!state.isPlayingFilm)break;
+    await playOneVideo(ready[i].videoUrl,ctx,canvas);
+  }
+  stopFilmPlayback();
+}
+function playOneVideo(url,ctx,canvas){
+  return new Promise(resolve=>{
+    const v=document.createElement('video');
+    v.src=url;v.playsInline=true;v.muted=false;v.crossOrigin='anonymous';
+    let finished=false;
+    const finish=()=>{if(finished)return;finished=true;resolve()};
+    v.onloadedmetadata=()=>{
+      const draw=()=>{
+        ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
+        const ar=v.videoWidth/v.videoHeight;
+        const car=canvas.width/canvas.height;
+        let dw,dh,dx,dy;
+        if(ar>car){dw=canvas.width;dh=canvas.width/ar;dx=0;dy=(canvas.height-dh)/2}
+        else{dh=canvas.height;dw=canvas.height*ar;dx=(canvas.width-dw)/2;dy=0}
+        try{ctx.drawImage(v,dx,dy,dw,dh)}catch(e){}
+      };
+      const loop=()=>{
+        if(!state.isPlayingFilm||v.paused||v.ended){finish();return}
+        draw();
+        state.playRAF=requestAnimationFrame(loop);
+      };
+      v.play().then(loop).catch(finish);
+    };
+    v.onended=finish;
+    v.onerror=finish;
+    v.load();
+  });
+}
+function stopFilmPlayback(){
+  state.isPlayingFilm=false;
+  if(state.playRAF)cancelAnimationFrame(state.playRAF);
+  state.playRAF=null;
+  const overlay=document.getElementById('player-overlay');
+  if(overlay)overlay.classList.remove('visible');
+  updateLaunchBtn();
+}
+function downloadFilm(){
+  const ready=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
+  if(!ready.length){showToast('Aucune vidéo','error');return}
+  ready.forEach((c,i)=>{
+    setTimeout(()=>{
+      const a=document.createElement('a');
+      a.href=c.videoUrl;
+      a.download='case-'+String(i+1).padStart(2,'0')+'.mp4';
+      a.target='_blank';
+      document.body.appendChild(a);a.click();document.body.removeChild(a);
+    },i*400);
+  });
+  showToast('Téléchargement de '+ready.length+' cases…','success');
+}
+(function init(){
+  const apiInput=document.getElementById('api-key-input');
+  if(apiInput){
+    apiInput.addEventListener('change',saveKey);
+    apiInput.addEventListener('blur',saveKey);
+  }
+  bindUpload('planche');
+  bindUpload('visage');
+  document.querySelectorAll('.preset').forEach(p=>{
+    p.addEventListener('click',()=>{
+      document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      state.selectedStyle=p.dataset.style;
+    });
+  });
+  const nbCasesSel=document.getElementById('nb-cases');
+  if(nbCasesSel)nbCasesSel.addEventListener('change',e=>{state.nbCases=parseInt(e.target.value,10);updateLaunchBtn()});
+  const durVideoSel=document.getElementById('dur-video');
+  if(durVideoSel)durVideoSel.addEventListener('change',e=>{state.durVideo=parseInt(e.target.value,10);updateLaunchBtn()});
+  const modeSel=document.getElementById('mode-select');
+  if(modeSel)modeSel.addEventListener('change',e=>{state.mode=e.target.value});
+  const launchBtn=document.getElementById('launch-btn');
+  if(launchBtn)launchBtn.addEventListener('click',runFullPipeline);
+  const stopBtn=document.getElementById('stop-btn');
+  if(stopBtn)stopBtn.addEventListener('click',()=>{
+    state.stopRequested=true;
+    setStatus('Arrêt en cours…');
+  });
+  const playBtn=document.getElementById('play-film-btn');
+  if(playBtn)playBtn.addEventListener('click',playFilm);
+  const dlBtn=document.getElementById('download-film-btn');
+  if(dlBtn)dlBtn.addEventListener('click',downloadFilm);
+  const overlay=document.getElementById('player-overlay');
+  if(overlay)overlay.addEventListener('click',stopFilmPlayback);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.isPlayingFilm)stopFilmPlayback()});
+  const dh=document.getElementById('debug-header');
+  if(dh)dh.addEventListener('click',e=>{if(e.target.tagName==='BUTTON')return;toggleDebug()});
+  const dcb=document.getElementById('debug-collapse-btn');
+  if(dcb)dcb.addEventListener('click',e=>{e.stopPropagation();toggleDebug()});
+  const dclb=document.getElementById('debug-clear-btn');
+  if(dclb)dclb.addEventListener('click',e=>{e.stopPropagation();clearDebug()});
+  const dcpb=document.getElementById('debug-copy-btn');
+  if(dcpb)dcpb.addEventListener('click',e=>{e.stopPropagation();copyDebug()});
+  const tj=document.getElementById('tab-journal');
+  if(tj)tj.addEventListener('click',()=>switchTab('journal'));
+  const tt=document.getElementById('tab-tech');
+  if(tt)tt.addEventListener('click',()=>switchTab('tech'));
+  const saved=getKey();
+  if(saved&&apiInput)apiInput.value=saved;
+  updateApiPanel();
+  updateLaunchBtn();
+  journalLog('Application prête. Chargez vos 2 photos puis lancez la génération.','highlight');
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+})();
 </script>
 </body>
 </html>
