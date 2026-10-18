@@ -76,8 +76,8 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 .case-card-header{padding:.5rem .7rem;font-size:.7rem;font-family:var(--fm);color:var(--dim);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:.5rem}
 .case-card-header .case-num{color:var(--acc);font-weight:700}
 .case-card-body{padding:.6rem;flex:1;display:flex;flex-direction:column}
-.case-card-body img,.case-card-body video{width:100%;border-radius:3px;background:#000;display:block;aspect-ratio:4/3;object-fit:cover}
-.case-placeholder{width:100%;aspect-ratio:4/3;background:#0a0a12;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:.7rem;font-family:var(--fm);flex-direction:column;gap:.5rem;text-align:center;padding:.5rem}
+.case-card-body img,.case-card-body video{width:100%;border-radius:3px;background:#000;display:block;aspect-ratio:9/16;object-fit:cover}
+.case-placeholder{width:100%;aspect-ratio:9/16;background:#0a0a12;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:.7rem;font-family:var(--fm);flex-direction:column;gap:.5rem;text-align:center;padding:.5rem}
 .spinner-mini{width:14px;height:14px;border:2px solid rgba(229,193,90,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .case-dialogue{font-size:.72rem;color:var(--acc);margin-top:.5rem;font-style:italic;text-align:center;padding:.4rem .6rem;background:rgba(229,193,90,.05);border-radius:3px;border-left:2px solid var(--acc)}
@@ -138,7 +138,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 <header>
 <h1>BD Animée Pro</h1>
 <p class="subtitle">Planche + Visage → BD complète → Animation → Film</p>
-<p class="version-tag">v1.1 · Studio Auto</p>
+<p class="version-tag">v1.2 · Studio Auto</p>
 </header>
 <div class="panel" id="api-panel">
 <h2>🔑 Clé API Agnes <span class="btn-small" id="api-test-btn" style="font-size:.6rem;padding:.25rem .5rem;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:3px">Tester</span></h2>
@@ -277,7 +277,7 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 </div>
 <script>
 // ══════════════════════════════════════════════════════════════════
-// CONFIGURATION (Optimisée contre les erreurs 503)
+// CONFIGURATION
 // ══════════════════════════════════════════════════════════════════
 const API_BASE = 'https://apihub.agnes-ai.com/v1';
 const POLL_BASE = 'https://apihub.agnes-ai.com/agnesapi';
@@ -286,7 +286,6 @@ const MODEL_IMAGE = 'agnes-image-2.1-flash';
 const MODEL_VIDEO = 'agnes-video-v2.0';
 const FRAME_RATE = 24;
 
-// Baissé à 1 pour ne pas surcharger l'API Agnes (qui plantait en 503)
 const IMAGE_PARALLEL = 1; 
 const IMAGE_INTERVAL_MS = 5000; 
 
@@ -532,7 +531,7 @@ function updateLaunchBtn(){
 async function apiFetch(url,options,label,maxAttempts){
   options=options||{};
   label=label||'API';
-  maxAttempts=maxAttempts||10; // Augmenté à 10 essais max
+  maxAttempts=maxAttempts||10;
   let lastErr=null;
   for(let attempt=0;attempt<maxAttempts;attempt++){
     if(state.stopRequested)throw new Error('Arrêt demandé');
@@ -549,13 +548,13 @@ async function apiFetch(url,options,label,maxAttempts){
         throw new Error('HTTP '+res.status+' — '+err.slice(0,200));
       }
       if(res.status===429){
-        const wait=Math.min(180,20+attempt*20); // Jusqu'à 3 mins d'attente
+        const wait=Math.min(180,20+attempt*20);
         debugLog('warn','RATELIMIT','429 → attente '+wait+'s');
         setStatus('Limite API — attente '+wait+'s');
         await sleep(wait*1000);continue;
       }
       if([500,502,503,504,520].includes(res.status)){
-        const wait=Math.min(180,15+attempt*15); // Jusqu'à 3 mins d'attente
+        const wait=Math.min(180,15+attempt*15);
         debugLog('warn','SERVICE','HTTP '+res.status+' → attente '+wait+'s');
         setStatus('Serveur surchargé — attente '+wait+'s');
         await sleep(wait*1000);continue;
@@ -642,12 +641,14 @@ async function generateCaseImage(caseData, index, total){
     '- Respect the art style faithfully.',
     '- The main character face MUST be recognizable as the reference photo.'
   ].join('\n');
+  
+  // MODIFICATION ICI : Passage en ratio 9:16 pour être compatible avec l'API vidéo
   const body={
     model:MODEL_IMAGE,
     prompt:prompt,
     n:1,
     size:'1K',
-    ratio:'4:3',
+    ratio:'9:16',
     extra_body:{
       image:[state.visageBase64],
       response_format:'url'
@@ -667,14 +668,13 @@ async function generateCaseImage(caseData, index, total){
 }
 
 async function createVideoTask(prompt,imageUrl,duration){
-  // Ajout de l'aspect_ratio pour éviter les erreurs 503/400 sur la vidéo
+  // MODIFICATION ICI : Suppression de aspect_ratio:"4:3" qui faisait planter le serveur
   const body={
     model:MODEL_VIDEO,
     prompt:prompt,
     image:imageUrl,
     num_frames:duration,
-    frame_rate:FRAME_RATE,
-    aspect_ratio:"4:3"
+    frame_rate:FRAME_RATE
   };
   const res=await apiFetch(API_BASE+'/videos',{
     method:'POST',
