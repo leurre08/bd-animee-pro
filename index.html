@@ -31,9 +31,6 @@ h1{font-size:1.7rem;font-weight:300;margin-bottom:.3rem;background:linear-gradie
 .toast{position:fixed;top:calc(1.5rem + var(--safe-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--bg3);color:var(--ink);border:1px solid var(--border);border-left:3px solid var(--acc);padding:.85rem 1.4rem;border-radius:var(--r);font-size:.85rem;box-shadow:0 8px 32px rgba(0,0,0,.7);z-index:9999;opacity:0;transition:transform .35s cubic-bezier(.2,.9,.3,1.2),opacity .35s;max-width:90vw;text-align:center;display:flex;align-items:center;gap:.6rem}
 .toast.visible{transform:translateX(-50%) translateY(0);opacity:1}
 .toast.success{border-left-color:var(--ok)}.toast.error{border-left-color:var(--err)}.toast.warn{border-left-color:var(--warn)}
-.banner{background:var(--panel);border:1px solid var(--border);border-left:2px solid var(--acc);padding:1rem 1.1rem;border-radius:var(--r);font-size:.8rem;color:var(--dim);margin-bottom:1rem;line-height:1.6}
-.banner strong{color:var(--ink)}
-.banner .hl{color:var(--acc);font-weight:600}
 .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.9rem}
 .panel.ok{box-shadow:inset 3px 0 0 var(--ok)}
 .panel h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
@@ -140,42 +137,42 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 <body>
 <header>
 <h1>BD Animée Pro</h1>
-<p class="subtitle">Planche + Visage ? BD complète ? Animation ? Film</p>
-<p class="version-tag">v1.0 · Studio Auto</p>
+<p class="subtitle">Planche + Visage → BD complète → Animation → Film</p>
+<p class="version-tag">v1.1 · Studio Auto</p>
 </header>
 <div class="panel" id="api-panel">
-<h2>?? Clé API Agnes <span class="btn-small" id="api-test-btn" style="font-size:.6rem;padding:.25rem .5rem;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:3px">Tester</span></h2>
+<h2>🔑 Clé API Agnes <span class="btn-small" id="api-test-btn" style="font-size:.6rem;padding:.25rem .5rem;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:3px">Tester</span></h2>
 <input type="password" id="api-key-input" placeholder="sk-... (colle ici ta clé Agnes)" autocomplete="off" spellcheck="false">
 <div class="status" id="api-status-line"><span class="dot"></span><span id="api-status-text">Aucune clé API enregistrée</span></div>
-<div class="hint">Clé gratuite sur <a href="https://platform.agnes-ai.com" target="_blank" rel="noopener">platform.agnes-ai.com</a> ? Settings ? API Keys</div>
+<div class="hint">Clé gratuite sur <a href="https://platform.agnes-ai.com" target="_blank" rel="noopener">platform.agnes-ai.com</a> → Settings → API Keys</div>
 </div>
 <div class="panel">
-<h2>?? Étape 1 — Charge les 2 photos</h2>
+<h2>📸 Étape 1 — Charge les 2 photos</h2>
 <div class="upload-grid">
 <div class="upload-zone" id="zone-planche">
 <input type="file" accept="image/*" id="file-planche">
-<div class="up-icon">???</div>
+<div class="up-icon">🖼️</div>
 <div class="up-text"><strong>PLANCHE BD ORIGINALE</strong>Ta planche de BD complète</div>
 </div>
 <div class="upload-zone" id="zone-visage">
 <input type="file" accept="image/*" id="file-visage">
-<div class="up-icon">??</div>
+<div class="up-icon">👤</div>
 <div class="up-text"><strong>TON VISAGE</strong>Portrait face caméra</div>
 </div>
 </div>
 </div>
 <div class="panel">
-<h2>?? Étape 2 — Style BD</h2>
+<h2>🎨 Étape 2 — Style BD</h2>
 <div class="preset-row" id="style-presets">
-<div class="preset active" data-style="franco-belge">???? Franco-belge</div>
-<div class="preset" data-style="realiste">?? Réaliste</div>
-<div class="preset" data-style="cartoon">?? Cartoon</div>
-<div class="preset" data-style="manga">???? Manga N&B</div>
-<div class="preset" data-style="aquarelle">?? Aquarelle</div>
-<div class="preset" data-style="encre">??? Encre noire</div>
+<div class="preset active" data-style="franco-belge">🇧🇪 Franco-belge</div>
+<div class="preset" data-style="realiste">🎬 Réaliste</div>
+<div class="preset" data-style="cartoon">🎈 Cartoon</div>
+<div class="preset" data-style="manga">🇯🇵 Manga N&B</div>
+<div class="preset" data-style="aquarelle">🎨 Aquarelle</div>
+<div class="preset" data-style="encre">🖋️ Encre noire</div>
 </div>
 </div><div class="panel">
-<h2>?? Étape 3 — Script (modifiable)</h2>
+<h2>📜 Étape 3 — Script (modifiable)</h2>
 <textarea id="script-input" rows="12">L'usinage et la transmission du savoir-faire
 
 Case 1 — L'atelier au réveil : Le personnage entre dans l'atelier, fraiseuse en arrière-plan, lumière jaune des néons.
@@ -196,7 +193,7 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <div class="hint">Format : "Case N — Titre : description" puis "Dialogue : texte" (optionnel). Le parser lit automatiquement.</div>
 </div>
 <div class="panel">
-<h2>?? Étape 4 — Paramètres</h2>
+<h2>⚙️ Étape 4 — Paramètres</h2>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
 <div>
 <label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Nombre de cases</label>
@@ -219,17 +216,17 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <div style="margin-top:.6rem">
 <label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Mode</label>
 <select id="mode-select" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit;font-size:.82rem">
-<option value="full" selected>?? Complet — Cases + Vidéos</option>
-<option value="images">??? Cases uniquement (rapide)</option>
-<option value="images+video1">??? Cases + 1ère vidéo (test)</option>
+<option value="full" selected>🎬 Complet — Cases + Vidéos</option>
+<option value="images">🖼️ Cases uniquement (rapide)</option>
+<option value="images+video1">🖼️ Cases + 1ère vidéo (test)</option>
 </select>
 </div>
 </div>
 <button type="button" class="btn btn-primary" id="launch-btn" disabled>
-?? GÉNÉRER LA BD ANIMÉE
-<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">Tout-en-un · Cases ? Vidéos ? Film</span>
+🎬 GÉNÉRER LA BD ANIMÉE
+<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">Tout-en-un · Cases → Vidéos → Film</span>
 </button>
-<button type="button" class="btn btn-stop" id="stop-btn">? Arrêter</button>
+<button type="button" class="btn btn-stop" id="stop-btn">⏹ Arrêter</button>
 <div class="step-bar" id="step-bar" style="display:none">
 <div class="step" data-step="analyse">1 · Analyse</div>
 <div class="step" data-step="images">2 · Cases</div>
@@ -237,7 +234,7 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <div class="step" data-step="film">4 · Film</div>
 </div>
 <div class="panel hidden" id="stats-panel">
-<h2>?? Statistiques</h2>
+<h2>📊 Statistiques</h2>
 <div class="stats-grid" id="stats-grid">
 <div class="stat-box"><div class="val" id="stat-cases">0</div><div class="lbl">Cases</div></div>
 <div class="stat-box"><div class="val" id="stat-images">0</div><div class="lbl">Images</div></div>
@@ -246,19 +243,19 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 </div>
 </div>
 <div id="cases-container" style="display:none">
-<h2 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem">?? Cases générées</h2>
+<h2 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem">🎨 Cases générées</h2>
 <div class="cases-grid" id="cases-grid"></div>
 </div>
 <div id="film-container" class="panel" style="display:none">
-<h2>??? Film final</h2>
+<h2>🎞️ Film final</h2>
 <div class="film-preview" id="film-preview">En attente…</div>
 <div class="btn-row" style="margin-top:.8rem">
-<button type="button" class="btn btn-small" id="play-film-btn" style="flex:1;padding:.7rem">? Diffuser</button>
-<button type="button" class="btn btn-small" id="download-film-btn" style="flex:1;padding:.7rem">? Télécharger</button>
+<button type="button" class="btn btn-small" id="play-film-btn" style="flex:1;padding:.7rem">▶ Diffuser</button>
+<button type="button" class="btn btn-small" id="download-film-btn" style="flex:1;padding:.7rem">⬇ Télécharger</button>
 </div>
 </div>
 <div class="status-bar" id="status-bar"><div class="spinner"></div><span id="status-text">Prêt</span></div>
-<div class="toast" id="toast"><span id="toast-icon">?</span><span id="toast-text">Message</span></div>
+<div class="toast" id="toast"><span id="toast-icon">✓</span><span id="toast-text">Message</span></div>
 <div class="player-overlay" id="player-overlay">
 <canvas id="player-canvas"></canvas>
 <div class="player-hint" id="player-hint">Échap ou clic pour quitter</div>
@@ -266,34 +263,40 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <div class="debug-panel" id="debug-panel">
 <div class="debug-header" id="debug-header">
 <div class="debug-tabs">
-<button type="button" class="debug-tab active" id="tab-journal">?? Journal</button>
-<button type="button" class="debug-tab" id="tab-tech">??? Technique</button>
+<button type="button" class="debug-tab active" id="tab-journal">📻 Journal</button>
+<button type="button" class="debug-tab" id="tab-tech">🖥️ Technique</button>
 </div>
 <div class="debug-actions">
 <button type="button" id="debug-copy-btn">Copier</button>
 <button type="button" id="debug-clear-btn">Effacer</button>
-<button type="button" id="debug-collapse-btn">-</button>
+<button type="button" id="debug-collapse-btn">−</button>
 </div>
 </div>
 <div class="debug-body journal-body" id="journal-body"></div>
 <div class="debug-body hidden" id="tech-body"></div>
-</div><script>
-// ------------------------------------------------------------------
-// CONFIGURATION
-// ------------------------------------------------------------------
+</div>
+<script>
+// ══════════════════════════════════════════════════════════════════
+// CONFIGURATION (Optimisée contre les erreurs 503)
+// ══════════════════════════════════════════════════════════════════
 const API_BASE = 'https://apihub.agnes-ai.com/v1';
 const POLL_BASE = 'https://apihub.agnes-ai.com/agnesapi';
 const MODEL_TEXT = 'agnes-2.5-flash';
 const MODEL_IMAGE = 'agnes-image-2.1-flash';
 const MODEL_VIDEO = 'agnes-video-v2.0';
 const FRAME_RATE = 24;
-const IMAGE_PARALLEL = 3;
-const IMAGE_INTERVAL_MS = 3400;
+
+// Baissé à 1 pour ne pas surcharger l'API Agnes (qui plantait en 503)
+const IMAGE_PARALLEL = 1; 
+const IMAGE_INTERVAL_MS = 5000; 
+
 const VIDEO_FIRST_POLL_DELAY_SEC = 60;
 const VIDEO_POLL_INTERVALS = [8,8,12,12,20,20,25];
 const VIDEO_MAX_POLL_ATTEMPTS = 100;
+
 const API_KEY_STORAGE = 'bd_animee_pro_api_key';
 const DEBUG_MAX = 500;
+
 const state = {
   plancheBase64: null,
   visageBase64: null,
@@ -309,27 +312,30 @@ const state = {
   playRAF: null,
   startTime: 0
 };
+
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function setStatus(t){const b=document.getElementById('status-bar');const x=document.getElementById('status-text');if(!b||!x)return;if(t){b.classList.add('visible');x.textContent=t}else b.classList.remove('visible')}
 function nowTime(){return new Date().toLocaleTimeString('fr-FR',{hour12:false})}
+
 let toastTimeout=null;
 function showToast(msg,type='success',dur=2500){
   const t=document.getElementById('toast');const i=document.getElementById('toast-icon');const x=document.getElementById('toast-text');
   if(!t||!i||!x)return;
   t.classList.remove('visible','success','error','warn');void t.offsetWidth;
-  const ic={success:'?',error:'?',warn:'?'};
-  i.textContent=ic[type]||'?';x.textContent=msg;
+  const ic={success:'✓',error:'✕',warn:'⚠'};
+  i.textContent=ic[type]||'✓';x.textContent=msg;
   t.classList.add(type);
   requestAnimationFrame(()=>t.classList.add('visible'));
   if(toastTimeout)clearTimeout(toastTimeout);
   toastTimeout=setTimeout(()=>t.classList.remove('visible'),dur);
 }
+
 function journalLog(msg,level){
   level = level || 'info';
   const body = document.getElementById('journal-body');
   if(!body) return;
-  const icons = { info:'·', highlight:'?', success:'?', warn:'??', error:'?', image:'???', video:'??', film:'???', api:'??' };
+  const icons = { info:'·', highlight:'▶', success:'✅', warn:'⚠️', error:'❌', image:'🖼️', video:'🎬', film:'🎞️', api:'📡' };
   const icon = icons[level] || '·';
   const entry = document.createElement('div');
   entry.className = 'j-entry ' + level;
@@ -338,6 +344,7 @@ function journalLog(msg,level){
   body.scrollTop = body.scrollHeight;
   while(body.children.length > DEBUG_MAX) body.removeChild(body.firstChild);
 }
+
 let debugCount=0,debugEntries=[],debugCollapsed=false,currentTab='journal';
 function debugLog(level,cat,msg,data){
   const body=document.getElementById('tech-body');if(!body)return;
@@ -359,11 +366,13 @@ function debugLog(level,cat,msg,data){
   const cnt=document.getElementById('debug-count');
   if(cnt)cnt.textContent=debugCount;
 }
+
 function clearDebug(){
   const b=document.getElementById('tech-body');const j=document.getElementById('journal-body');
   if(b)b.innerHTML='';if(j)j.innerHTML='';
   debugEntries=[];debugCount=0;
 }
+
 function copyDebug(){
   const lines=debugEntries.map(e=>e.time+' ['+e.cat+'] '+e.msg).join('\n');
   const finish=(ok)=>showToast(ok?'Console copiée':'Copie impossible',ok?'success':'error');
@@ -375,6 +384,7 @@ function copyDebug(){
   }catch(e){}
   legacyCopy(lines,finish);
 }
+
 function legacyCopy(text,cb){
   const ta=document.createElement('textarea');ta.value=text;
   ta.style.position='fixed';ta.style.opacity='0';
@@ -382,14 +392,16 @@ function legacyCopy(text,cb){
   let ok=false;try{ok=document.execCommand('copy')}catch(e){}
   document.body.removeChild(ta);cb(ok);
 }
+
 function toggleDebug(){
   const p=document.getElementById('debug-panel');
   const b=document.getElementById('debug-collapse-btn');
   if(!p||!b)return;
   debugCollapsed=!debugCollapsed;
   p.classList.toggle('collapsed',debugCollapsed);
-  b.textContent=debugCollapsed?'+':'-';
+  b.textContent=debugCollapsed?'+':'−';
 }
+
 function switchTab(tab){
   currentTab=tab;
   const j=document.getElementById('journal-body');
@@ -400,16 +412,18 @@ function switchTab(tab){
   if(tab==='journal'){j.classList.remove('hidden');t.classList.add('hidden');tj.classList.add('active');tt.classList.remove('active')}
   else{t.classList.remove('hidden');j.classList.add('hidden');tt.classList.add('active');tj.classList.remove('active');t.scrollTop=t.scrollHeight}
 }
+
 function getKey(){try{return(localStorage.getItem(API_KEY_STORAGE)||'').trim()}catch(e){return''}}
 function saveKey(){
   const v=document.getElementById('api-key-input').value.trim();
   if(!v){localStorage.removeItem(API_KEY_STORAGE);updateApiPanel();showToast('Clé supprimée','warn');return}
   if(!v.startsWith('sk-')){if(!confirm('La clé ne commence pas par "sk-". Sauvegarder quand même ?'))return}
   try{localStorage.setItem(API_KEY_STORAGE,v)}catch(e){}
-  updateApiPanel();showToast('Clé enregistrée ?','success');
+  updateApiPanel();showToast('Clé enregistrée ✓','success');
   debugLog('success','API','Clé : '+v.slice(0,8)+'…'+v.slice(-4));
   journalLog('Clé API enregistrée.','success');
 }
+
 function updateApiPanel(){
   const key=getKey();
   const panel=document.getElementById('api-panel');
@@ -428,6 +442,7 @@ function updateApiPanel(){
   }
   updateLaunchBtn();
 }
+
 function fileToBase64(file){
   return new Promise((res,rej)=>{
     const r=new FileReader();
@@ -436,6 +451,7 @@ function fileToBase64(file){
     r.readAsDataURL(file);
   });
 }
+
 async function compressImage(b64,maxSide){
   maxSide = maxSide || 1400;
   return new Promise(resolve=>{
@@ -452,6 +468,7 @@ async function compressImage(b64,maxSide){
     img.src=b64;
   });
 }
+
 async function handleFile(file,type){
   if(!file||!file.type.startsWith('image/')){showToast('Fichier non-image','error');return}
   const raw=await fileToBase64(file);
@@ -463,11 +480,12 @@ async function handleFile(file,type){
   journalLog(type==='planche'?'Planche BD chargée.':'Visage chargé.','success');
   updateLaunchBtn();
 }
+
 function renderUpload(type,base64){
   const zone=document.getElementById('zone-'+type);
   if(!zone)return;
   zone.classList.add('has-image');
-  zone.innerHTML='<img src="'+base64+'" alt="'+type+'"><button class="remove-btn" data-remove="'+type+'">?</button>';
+  zone.innerHTML='<img src="'+base64+'" alt="'+type+'"><button class="remove-btn" data-remove="'+type+'">✕</button>';
   zone.querySelector('[data-remove]').addEventListener('click',e=>{
     e.stopPropagation();
     if(type==='planche')state.plancheBase64=null;
@@ -476,21 +494,24 @@ function renderUpload(type,base64){
     updateLaunchBtn();
   });
 }
+
 function resetUpload(type){
   const zone=document.getElementById('zone-'+type);
   if(!zone)return;
   zone.classList.remove('has-image');
   const isPlanche=type==='planche';
   zone.innerHTML='<input type="file" accept="image/*" id="file-'+type+'">'+
-    '<div class="up-icon">'+(isPlanche?'???':'??')+'</div>'+
+    '<div class="up-icon">'+(isPlanche?'🖼️':'👤')+'</div>'+
     '<div class="up-text"><strong>'+(isPlanche?'PLANCHE BD ORIGINALE':'TON VISAGE')+'</strong>'+(isPlanche?'Ta planche de BD complète':'Portrait face caméra')+'</div>';
   bindUpload(type);
 }
+
 function bindUpload(type){
   const input=document.getElementById('file-'+type);
   if(!input)return;
   input.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)handleFile(f,type)});
 }
+
 function updateLaunchBtn(){
   const btn=document.getElementById('launch-btn');
   if(!btn)return;
@@ -498,16 +519,20 @@ function updateLaunchBtn(){
   const hasPlanche=!!state.plancheBase64;
   const hasVisage=!!state.visageBase64;
   btn.disabled=!hasKey||!hasPlanche||!hasVisage||state.isRunning;
-  if(state.isRunning)btn.innerHTML='? Génération en cours…';
-  else if(!hasKey)btn.innerHTML='?? Ajoutez votre clé API';
-  else if(!hasPlanche)btn.innerHTML='??? Chargez la planche BD';
-  else if(!hasVisage)btn.innerHTML='?? Chargez votre visage';
-  else btn.innerHTML='?? GÉNÉRER LA BD ANIMÉE<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">'+state.nbCases+' cases · '+Math.round(state.durVideo/24)+'s par vidéo</span>';
+  if(state.isRunning)btn.innerHTML='⏳ Génération en cours…';
+  else if(!hasKey)btn.innerHTML='🔑 Ajoutez votre clé API';
+  else if(!hasPlanche)btn.innerHTML='🖼️ Chargez la planche BD';
+  else if(!hasVisage)btn.innerHTML='👤 Chargez votre visage';
+  else btn.innerHTML='🎬 GÉNÉRER LA BD ANIMÉE<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">'+state.nbCases+' cases · '+Math.round(state.durVideo/24)+'s par vidéo</span>';
 }
+
+// ══════════════════════════════════════════════════════════════════
+// API FETCH (Plus patient pour les erreurs 503)
+// ══════════════════════════════════════════════════════════════════
 async function apiFetch(url,options,label,maxAttempts){
   options=options||{};
   label=label||'API';
-  maxAttempts=maxAttempts||5;
+  maxAttempts=maxAttempts||10; // Augmenté à 10 essais max
   let lastErr=null;
   for(let attempt=0;attempt<maxAttempts;attempt++){
     if(state.stopRequested)throw new Error('Arrêt demandé');
@@ -524,14 +549,15 @@ async function apiFetch(url,options,label,maxAttempts){
         throw new Error('HTTP '+res.status+' — '+err.slice(0,200));
       }
       if(res.status===429){
-        const wait=Math.min(120,20+attempt*20);
-        debugLog('warn','RATELIMIT','429 ? attente '+wait+'s');
+        const wait=Math.min(180,20+attempt*20); // Jusqu'à 3 mins d'attente
+        debugLog('warn','RATELIMIT','429 → attente '+wait+'s');
         setStatus('Limite API — attente '+wait+'s');
         await sleep(wait*1000);continue;
       }
       if([500,502,503,504,520].includes(res.status)){
-        const wait=Math.min(60,8+attempt*6);
-        debugLog('warn','SERVICE','HTTP '+res.status+' ? attente '+wait+'s');
+        const wait=Math.min(180,15+attempt*15); // Jusqu'à 3 mins d'attente
+        debugLog('warn','SERVICE','HTTP '+res.status+' → attente '+wait+'s');
+        setStatus('Serveur surchargé — attente '+wait+'s');
         await sleep(wait*1000);continue;
       }
       const wait=Math.min(60,6+attempt*5);
@@ -541,12 +567,14 @@ async function apiFetch(url,options,label,maxAttempts){
       if(/^HTTP (4\d\d)/.test(e.message))throw e;
       lastErr=e;
       const wait=Math.min(45,4+attempt*4);
-      debugLog('warn','NETWORK',e.message+' ? retry '+wait+'s');
+      debugLog('warn','NETWORK',e.message+' → retry '+wait+'s');
       await sleep(wait*1000);
     }
   }
   throw lastErr||new Error('Échec '+label);
-}function parseScript(text){
+}
+
+function parseScript(text){
   const cases=[];
   const lines=text.split('\n');
   let currentCase=null;
@@ -573,6 +601,7 @@ async function apiFetch(url,options,label,maxAttempts){
   debugLog('info','SCRIPT',cases.length+' cases parsées');
   return cases;
 }
+
 function getStylePrompt(style){
   const styles={
     'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors, clean Hergé/Uderzo inspired rendering, comic book panel with a thin black border',
@@ -584,6 +613,7 @@ function getStylePrompt(style){
   };
   return styles[style]||styles['franco-belge'];
 }
+
 async function generateCaseImage(caseData, index, total){
   const stylePrompt=getStylePrompt(state.selectedStyle);
   const dialogue=caseData.dialogue?'Dialogue (in French, inside a speech bubble at the bottom): « '+caseData.dialogue+' »':'Silent panel (no speech bubble).';
@@ -635,8 +665,17 @@ async function generateCaseImage(caseData, index, total){
   if(!url)throw new Error('Format image inconnu');
   return url;
 }
+
 async function createVideoTask(prompt,imageUrl,duration){
-  const body={model:MODEL_VIDEO,prompt:prompt,image:imageUrl,num_frames:duration,frame_rate:FRAME_RATE};
+  // Ajout de l'aspect_ratio pour éviter les erreurs 503/400 sur la vidéo
+  const body={
+    model:MODEL_VIDEO,
+    prompt:prompt,
+    image:imageUrl,
+    num_frames:duration,
+    frame_rate:FRAME_RATE,
+    aspect_ratio:"4:3"
+  };
   const res=await apiFetch(API_BASE+'/videos',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
@@ -647,6 +686,7 @@ async function createVideoTask(prompt,imageUrl,duration){
   if(!vid)throw new Error('Pas de video_id');
   return vid;
 }
+
 async function pollVideo(videoId,onProgress){
   let rem=VIDEO_FIRST_POLL_DELAY_SEC;
   while(rem>0){
@@ -676,6 +716,7 @@ async function pollVideo(videoId,onProgress){
   }
   throw new Error('Timeout');
 }
+
 function renderCases(){
   const grid=document.getElementById('cases-grid');
   const cont=document.getElementById('cases-container');
@@ -691,12 +732,13 @@ function renderCases(){
     else if(c.status==='done-vid'){body='<video src="'+c.videoUrl+'" controls preload="metadata" playsinline></video>';cls='done'}
     else if(c.status==='error'){body='<div class="case-placeholder" style="color:var(--err)">Erreur : '+esc(c.error||'')+'</div>';cls='error'}
     return '<div class="case-card '+cls+'" style="position:relative">'+
-      '<div class="case-card-header"><span class="case-num">Case '+(i+1)+'</span><span>'+(c.status==='done-vid'?'?':c.status==='error'?'?':'…')+'</span></div>'+
+      '<div class="case-card-header"><span class="case-num">Case '+(i+1)+'</span><span>'+(c.status==='done-vid'?'✓':c.status==='error'?'✕':'…')+'</span></div>'+
       '<div class="case-card-body">'+body+
       (c.dialogue?'<div class="case-dialogue">« '+esc(c.dialogue)+' »</div>':'')+
       '</div></div>';
   }).join('');
 }
+
 function setStep(step){
   const bar=document.getElementById('step-bar');
   if(bar)bar.style.display='flex';
@@ -709,6 +751,7 @@ function setStep(step){
     else if(i===idx)el.classList.add('active');
   });
 }
+
 function updateStats(){
   const sp=document.getElementById('stats-panel');
   if(sp)sp.classList.remove('hidden');
@@ -725,6 +768,7 @@ function updateStats(){
   if(el3)el3.textContent=vids;
   if(el4)el4.textContent=elapsed+'s';
 }
+
 async function runFullPipeline(){
   if(state.isRunning)return;
   if(!getKey()){showToast('Ajoutez votre clé API','error');return}
@@ -793,8 +837,8 @@ async function runFullPipeline(){
     if(state.stopRequested)throw new Error('Arrêt demandé');
     if(state.mode==='images'){
       setStep('film');
-      setStatus('? Cases prêtes ?');
-      showToast('Cases générées ?','success');
+      setStatus('✦ Cases prêtes ✦');
+      showToast('Cases générées ✓','success');
       await sleep(3000);
       setStatus(null);
       state.isRunning=false;
@@ -833,7 +877,7 @@ async function runFullPipeline(){
         renderCases();updateStats();
         completedVideos++;
         journalLog('Case '+(i+1)+' animée.','video');
-        showToast('Case '+(i+1)+' animée ?','success');
+        showToast('Case '+(i+1)+' animée ✓','success');
       }catch(e){
         if(e.message==='Arrêt demandé')break;
         c.status='error';c.error=e.message;
@@ -855,13 +899,13 @@ async function runFullPipeline(){
     const filmPreview=document.getElementById('film-preview');
     if(readyCases.length>0){
       if(filmContainer)filmContainer.style.display='block';
-      if(filmPreview)filmPreview.innerHTML='<strong>? '+readyCases.length+'/'+state.cases.length+' cases animées</strong><br>Clique sur Diffuser.';
+      if(filmPreview)filmPreview.innerHTML='<strong>✦ '+readyCases.length+'/'+state.cases.length+' cases animées</strong><br>Clique sur Diffuser.';
       const pfb=document.getElementById('play-film-btn');
       const dfb=document.getElementById('download-film-btn');
       if(pfb)pfb.disabled=false;
       if(dfb)dfb.disabled=false;
-      setStatus('? BD animée prête ?');
-      showToast(readyCases.length+' cases animées ?','success');
+      setStatus('✦ BD animée prête ✦');
+      showToast(readyCases.length+' cases animées ✓','success');
     }
     await sleep(3000);
     setStatus(null);
@@ -880,6 +924,7 @@ async function runFullPipeline(){
   document.getElementById('stop-btn').classList.remove('visible');
   updateLaunchBtn();
 }
+
 async function playFilm(){
   const ready=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
   if(!ready.length){showToast('Aucune vidéo','error');return}
@@ -904,6 +949,7 @@ async function playFilm(){
   }
   stopFilmPlayback();
 }
+
 function playOneVideo(url,ctx,canvas){
   return new Promise(resolve=>{
     const v=document.createElement('video');
@@ -932,6 +978,7 @@ function playOneVideo(url,ctx,canvas){
     v.load();
   });
 }
+
 function stopFilmPlayback(){
   state.isPlayingFilm=false;
   if(state.playRAF)cancelAnimationFrame(state.playRAF);
@@ -940,6 +987,7 @@ function stopFilmPlayback(){
   if(overlay)overlay.classList.remove('visible');
   updateLaunchBtn();
 }
+
 function downloadFilm(){
   const ready=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
   if(!ready.length){showToast('Aucune vidéo','error');return}
@@ -954,6 +1002,7 @@ function downloadFilm(){
   });
   showToast('Téléchargement de '+ready.length+' cases…','success');
 }
+
 (function init(){
   const apiInput=document.getElementById('api-key-input');
   if(apiInput){
