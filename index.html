@@ -34,9 +34,8 @@ h1{font-size:1.7rem;font-weight:300;margin-bottom:.3rem;background:linear-gradie
 .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem;margin-bottom:.9rem}
 .panel.ok{box-shadow:inset 3px 0 0 var(--ok)}
 .panel h2{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:.5rem}
-input[type=password],input[type=text],textarea{width:100%;padding:.8rem .95rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:var(--fm);font-size:.78rem;margin-bottom:.5rem;-webkit-appearance:none}
-textarea{resize:vertical;min-height:80px;line-height:1.55;font-family:var(--fs);font-size:.85rem}
-input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(229,193,90,.1)}
+textarea{width:100%;padding:.8rem .95rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:var(--fm);font-size:.78rem;margin-bottom:.5rem;-webkit-appearance:none;resize:vertical;min-height:80px;line-height:1.55}
+textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(229,193,90,.1)}
 .btn{width:100%;padding:.85rem 1.1rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-size:.82rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-bottom:.6rem;transition:all .2s;font-family:inherit}
 .btn:hover:not(:disabled){background:var(--bg3);border-color:var(--acc)}
 .btn:active:not(:disabled){transform:scale(.98)}
@@ -45,8 +44,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 .btn-stop{border-color:var(--err);color:var(--err);background:transparent;display:none}
 .btn-stop.visible{display:block}
 .btn-small{width:auto;padding:.5rem .85rem;font-size:.7rem;margin-bottom:0;display:inline-block}
-.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem}
-.btn-row .btn{flex:1;min-width:120px;margin-bottom:0}
 .status{font-size:.74rem;padding:.55rem .85rem;border-radius:var(--r);margin-bottom:.5rem;display:flex;align-items:center;gap:.6rem;background:var(--bg2);color:var(--dim);border:1px solid var(--border)}
 .status.ok{background:rgba(74,157,106,.08);color:var(--ok);border-color:rgba(74,157,106,.3)}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--faint);flex-shrink:0}
@@ -123,29 +120,22 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 .status-bar.visible{transform:translateY(0)}
 .spinner{width:12px;height:12px;border:2px solid rgba(229,193,90,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 .hidden{display:none!important}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.5rem;margin-top:.5rem}
-.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:.5rem .6rem;text-align:center}
-.stat-box .val{font-family:var(--fm);font-size:1rem;color:var(--acc);font-weight:700}
-.stat-box .lbl{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-top:.15rem}
-.film-preview{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;font-size:.78rem;color:var(--dim);line-height:1.6}
-.film-preview strong{color:var(--acc)}
-::-webkit-scrollbar{width:6px;height:6px}
-::-webkit-scrollbar-track{background:var(--bg2)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 </style>
 </head>
 <body>
 <header>
 <h1>BD Animée Pro</h1>
 <p class="subtitle">Planche + Visage → BD complète → Animation → Film</p>
-<p class="version-tag">v1.2 · Studio Auto</p>
+<p class="version-tag">v2.0 · Multi-Clés</p>
 </header>
+
 <div class="panel" id="api-panel">
-<h2>🔑 Clé API Agnes <span class="btn-small" id="api-test-btn" style="font-size:.6rem;padding:.25rem .5rem;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:3px">Tester</span></h2>
-<input type="password" id="api-key-input" placeholder="sk-... (colle ici ta clé Agnes)" autocomplete="off" spellcheck="false">
+<h2>🔑 Clés API Agnes <span class="btn-small" id="api-test-btn" style="font-size:.6rem;padding:.25rem .5rem;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:3px">Tester</span></h2>
+<textarea id="api-keys-input" placeholder="sk-... (colle une ou plusieurs clés, une par ligne)" rows="3" autocomplete="off" spellcheck="false"></textarea>
 <div class="status" id="api-status-line"><span class="dot"></span><span id="api-status-text">Aucune clé API enregistrée</span></div>
-<div class="hint">Clé gratuite sur <a href="https://platform.agnes-ai.com" target="_blank" rel="noopener">platform.agnes-ai.com</a> → Settings → API Keys</div>
+<div class="hint">Clé gratuite sur <a href="https://platform.agnes-ai.com" target="_blank" rel="noopener">platform.agnes-ai.com</a> → Settings → API Keys. <strong>Plus vous avez de clés, plus vous évitez les erreurs 503.</strong></div>
 </div>
+
 <div class="panel">
 <h2>📸 Étape 1 — Charge les 2 photos</h2>
 <div class="upload-grid">
@@ -161,6 +151,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 </div>
 </div>
 </div>
+
 <div class="panel">
 <h2>🎨 Étape 2 — Style BD</h2>
 <div class="preset-row" id="style-presets">
@@ -171,7 +162,9 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0
 <div class="preset" data-style="aquarelle">🎨 Aquarelle</div>
 <div class="preset" data-style="encre">🖋️ Encre noire</div>
 </div>
-</div><div class="panel">
+</div>
+
+<div class="panel">
 <h2>📜 Étape 3 — Script (modifiable)</h2>
 <textarea id="script-input" rows="12">L'usinage et la transmission du savoir-faire
 
@@ -190,8 +183,8 @@ Dialogue : C'est l'expérience. 30 ans que je fais ça.
 Case 5 — Le geste transmis : L'apprenti reproduit le geste, le personnage observe. (Silence)
 
 Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en fond. (Silence)</textarea>
-<div class="hint">Format : "Case N — Titre : description" puis "Dialogue : texte" (optionnel). Le parser lit automatiquement.</div>
 </div>
+
 <div class="panel">
 <h2>⚙️ Étape 4 — Paramètres</h2>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
@@ -213,47 +206,35 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 </select>
 </div>
 </div>
-<div style="margin-top:.6rem">
-<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Mode</label>
-<select id="mode-select" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit;font-size:.82rem">
-<option value="full" selected>🎬 Complet — Cases + Vidéos</option>
-<option value="images">🖼️ Cases uniquement (rapide)</option>
-<option value="images+video1">🖼️ Cases + 1ère vidéo (test)</option>
-</select>
 </div>
-</div>
+
 <button type="button" class="btn btn-primary" id="launch-btn" disabled>
 🎬 GÉNÉRER LA BD ANIMÉE
-<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">Tout-en-un · Cases → Vidéos → Film</span>
 </button>
+<button type="button" class="btn btn-primary hidden" id="launch-videos-btn" style="background:linear-gradient(135deg,rgba(74,123,200,.2),rgba(74,157,106,.15));color:#6a9be0;border-color:#4a7bc8">🎬 RÉESSAYER LES VIDÉOS SEULES</button>
 <button type="button" class="btn btn-stop" id="stop-btn">⏹ Arrêter</button>
+
 <div class="step-bar" id="step-bar" style="display:none">
 <div class="step" data-step="analyse">1 · Analyse</div>
 <div class="step" data-step="images">2 · Cases</div>
 <div class="step" data-step="videos">3 · Vidéos</div>
 <div class="step" data-step="film">4 · Film</div>
 </div>
-<div class="panel hidden" id="stats-panel">
-<h2>📊 Statistiques</h2>
-<div class="stats-grid" id="stats-grid">
-<div class="stat-box"><div class="val" id="stat-cases">0</div><div class="lbl">Cases</div></div>
-<div class="stat-box"><div class="val" id="stat-images">0</div><div class="lbl">Images</div></div>
-<div class="stat-box"><div class="val" id="stat-videos">0</div><div class="lbl">Vidéos</div></div>
-<div class="stat-box"><div class="val" id="stat-time">0s</div><div class="lbl">Durée</div></div>
-</div>
-</div>
+
 <div id="cases-container" style="display:none">
 <h2 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem">🎨 Cases générées</h2>
 <div class="cases-grid" id="cases-grid"></div>
 </div>
+
 <div id="film-container" class="panel" style="display:none">
 <h2>🎞️ Film final</h2>
-<div class="film-preview" id="film-preview">En attente…</div>
-<div class="btn-row" style="margin-top:.8rem">
+<div style="background:var(--bg2);padding:.8rem;font-size:.78rem;color:var(--dim);margin-bottom:.8rem" id="film-preview">En attente…</div>
+<div style="display:flex;gap:.6rem;margin-top:.8rem">
 <button type="button" class="btn btn-small" id="play-film-btn" style="flex:1;padding:.7rem">▶ Diffuser</button>
 <button type="button" class="btn btn-small" id="download-film-btn" style="flex:1;padding:.7rem">⬇ Télécharger</button>
 </div>
 </div>
+
 <div class="status-bar" id="status-bar"><div class="spinner"></div><span id="status-text">Prêt</span></div>
 <div class="toast" id="toast"><span id="toast-icon">✓</span><span id="toast-text">Message</span></div>
 <div class="player-overlay" id="player-overlay">
@@ -285,24 +266,22 @@ const MODEL_TEXT = 'agnes-2.5-flash';
 const MODEL_IMAGE = 'agnes-image-2.1-flash';
 const MODEL_VIDEO = 'agnes-video-v2.0';
 const FRAME_RATE = 24;
-
 const IMAGE_PARALLEL = 1; 
 const IMAGE_INTERVAL_MS = 5000; 
-
 const VIDEO_FIRST_POLL_DELAY_SEC = 60;
 const VIDEO_POLL_INTERVALS = [8,8,12,12,20,20,25];
 const VIDEO_MAX_POLL_ATTEMPTS = 100;
-
-const API_KEY_STORAGE = 'bd_animee_pro_api_key';
+const API_KEYS_STORAGE = 'bd_animee_pro_api_keys';
 const DEBUG_MAX = 500;
 
 const state = {
+  keys: [],
+  currentKeyIndex: 0,
   plancheBase64: null,
   visageBase64: null,
   selectedStyle: 'franco-belge',
   nbCases: 6,
   durVideo: 145,
-  mode: 'full',
   parsedScript: [],
   cases: [],
   isRunning: false,
@@ -324,8 +303,7 @@ function showToast(msg,type='success',dur=2500){
   t.classList.remove('visible','success','error','warn');void t.offsetWidth;
   const ic={success:'✓',error:'✕',warn:'⚠'};
   i.textContent=ic[type]||'✓';x.textContent=msg;
-  t.classList.add(type);
-  requestAnimationFrame(()=>t.classList.add('visible'));
+  t.classList.add(type);requestAnimationFrame(()=>t.classList.add('visible'));
   if(toastTimeout)clearTimeout(toastTimeout);
   toastTimeout=setTimeout(()=>t.classList.remove('visible'),dur);
 }
@@ -344,96 +322,76 @@ function journalLog(msg,level){
   while(body.children.length > DEBUG_MAX) body.removeChild(body.firstChild);
 }
 
-let debugCount=0,debugEntries=[],debugCollapsed=false,currentTab='journal';
+let debugCount=0,debugEntries=[],debugCollapsed=false;
 function debugLog(level,cat,msg,data){
   const body=document.getElementById('tech-body');if(!body)return;
   const time=nowTime();
   const entry=document.createElement('div');entry.className='debug-entry '+level;
   let html='<span class="debug-time">'+time+'</span><span class="debug-cat">['+esc(cat)+']</span><span class="debug-msg">'+esc(msg)+'</span>';
   if(data!==undefined&&data!==null){
-    let ds;
-    if(typeof data==='string')ds=data;
-    else{try{ds=JSON.stringify(data,null,2)}catch(e){ds=String(data)}}
-    if(ds.length>1500)ds=ds.slice(0,1500)+'\n…[tronqué]';
-    html+='<pre style="margin-top:.3rem;padding:.4rem;background:#0a0a12;border:1px solid var(--border);border-radius:2px;font-size:.62rem;color:#a8d8b0;max-height:120px;overflow:auto;white-space:pre-wrap;word-break:break-all">'+esc(ds)+'</pre>';
+    let ds=typeof data==='string'?data:(JSON.stringify(data,null,2)||String(data));
+    if(ds.length>1500)ds=ds.slice(0,1500)+'…';
+    html+='<pre style="margin-top:.3rem;padding:.4rem;background:#0a0a12;border:1px solid var(--border);font-size:.62rem;color:#a8d8b0;max-height:120px;overflow:auto;white-space:pre-wrap">'+esc(ds)+'</pre>';
   }
   entry.innerHTML=html;body.appendChild(entry);
   debugEntries.push({time,level,cat,msg});
   while(body.children.length>DEBUG_MAX)body.removeChild(body.firstChild);
   body.scrollTop=body.scrollHeight;
-  debugCount++;
-  const cnt=document.getElementById('debug-count');
-  if(cnt)cnt.textContent=debugCount;
-}
-
-function clearDebug(){
-  const b=document.getElementById('tech-body');const j=document.getElementById('journal-body');
-  if(b)b.innerHTML='';if(j)j.innerHTML='';
-  debugEntries=[];debugCount=0;
-}
-
-function copyDebug(){
-  const lines=debugEntries.map(e=>e.time+' ['+e.cat+'] '+e.msg).join('\n');
-  const finish=(ok)=>showToast(ok?'Console copiée':'Copie impossible',ok?'success':'error');
-  try{
-    if(navigator.clipboard&&window.isSecureContext){
-      navigator.clipboard.writeText(lines).then(()=>finish(true)).catch(()=>legacyCopy(lines,finish));
-      return;
-    }
-  }catch(e){}
-  legacyCopy(lines,finish);
-}
-
-function legacyCopy(text,cb){
-  const ta=document.createElement('textarea');ta.value=text;
-  ta.style.position='fixed';ta.style.opacity='0';
-  document.body.appendChild(ta);ta.focus();ta.select();
-  let ok=false;try{ok=document.execCommand('copy')}catch(e){}
-  document.body.removeChild(ta);cb(ok);
+  document.getElementById('debug-count').textContent=++debugCount;
 }
 
 function toggleDebug(){
-  const p=document.getElementById('debug-panel');
-  const b=document.getElementById('debug-collapse-btn');
-  if(!p||!b)return;
   debugCollapsed=!debugCollapsed;
-  p.classList.toggle('collapsed',debugCollapsed);
-  b.textContent=debugCollapsed?'+':'−';
+  document.getElementById('debug-panel').classList.toggle('collapsed',debugCollapsed);
+  document.getElementById('debug-collapse-btn').textContent=debugCollapsed?'+':'−';
 }
 
 function switchTab(tab){
-  currentTab=tab;
-  const j=document.getElementById('journal-body');
-  const t=document.getElementById('tech-body');
-  const tj=document.getElementById('tab-journal');
-  const tt=document.getElementById('tab-tech');
-  if(!j||!t)return;
+  const j=document.getElementById('journal-body'), t=document.getElementById('tech-body');
+  const tj=document.getElementById('tab-journal'), tt=document.getElementById('tab-tech');
   if(tab==='journal'){j.classList.remove('hidden');t.classList.add('hidden');tj.classList.add('active');tt.classList.remove('active')}
-  else{t.classList.remove('hidden');j.classList.add('hidden');tt.classList.add('active');tj.classList.remove('active');t.scrollTop=t.scrollHeight}
+  else{t.classList.remove('hidden');j.classList.add('hidden');tt.classList.add('active');tj.classList.remove('active')}
 }
 
-function getKey(){try{return(localStorage.getItem(API_KEY_STORAGE)||'').trim()}catch(e){return''}}
-function saveKey(){
-  const v=document.getElementById('api-key-input').value.trim();
-  if(!v){localStorage.removeItem(API_KEY_STORAGE);updateApiPanel();showToast('Clé supprimée','warn');return}
-  if(!v.startsWith('sk-')){if(!confirm('La clé ne commence pas par "sk-". Sauvegarder quand même ?'))return}
-  try{localStorage.setItem(API_KEY_STORAGE,v)}catch(e){}
-  updateApiPanel();showToast('Clé enregistrée ✓','success');
-  debugLog('success','API','Clé : '+v.slice(0,8)+'…'+v.slice(-4));
-  journalLog('Clé API enregistrée.','success');
+// ══════════════════════════════════════════════════════════════════
+// MULTI-CLÉS API
+// ══════════════════════════════════════════════════════════════════
+function loadKeys(){
+  try{
+    const raw=localStorage.getItem(API_KEYS_STORAGE);
+    if(raw){
+      state.keys=JSON.parse(raw);
+      if(!Array.isArray(state.keys))state.keys=[];
+    }
+  }catch(e){state.keys=[]}
 }
-
+function saveKeys(){
+  const input=document.getElementById('api-keys-input');
+  const raw=input.value.split('\n').map(k=>k.trim()).filter(k=>k.length>0);
+  state.keys=raw;
+  try{localStorage.setItem(API_KEYS_STORAGE,JSON.stringify(state.keys))}catch(e){}
+  updateApiPanel();
+  showToast(state.keys.length+' clé(s) enregistrée(s)','success');
+}
+function getCurrentKey(){
+  if(state.keys.length===0)return '';
+  if(state.currentKeyIndex>=state.keys.length)state.currentKeyIndex=0;
+  return state.keys[state.currentKeyIndex];
+}
+function rotateKey(){
+  if(state.keys.length<=1)return;
+  state.currentKeyIndex=(state.currentKeyIndex+1)%state.keys.length;
+  debugLog('info','CLÉ','Rotation vers la clé n°'+(state.currentKeyIndex+1));
+}
 function updateApiPanel(){
-  const key=getKey();
   const panel=document.getElementById('api-panel');
   const line=document.getElementById('api-status-line');
   const text=document.getElementById('api-status-text');
-  const input=document.getElementById('api-key-input');
-  if(!panel||!line||!text||!input)return;
-  if(key){
+  const input=document.getElementById('api-keys-input');
+  if(state.keys.length>0){
     panel.classList.add('ok');line.classList.add('ok');
-    text.textContent='Clé active · '+key.slice(0,8)+'…'+key.slice(-4);
-    input.value=key;
+    text.textContent=state.keys.length+' clé(s) active(s) · Clé actuelle : '+getCurrentKey().slice(0,8)+'…';
+    input.value=state.keys.join('\n');
   } else {
     panel.classList.remove('ok');line.classList.remove('ok');
     text.textContent='Aucune clé API enregistrée';
@@ -442,17 +400,13 @@ function updateApiPanel(){
   updateLaunchBtn();
 }
 
+// ══════════════════════════════════════════════════════════════════
+// UPLOAD
+// ══════════════════════════════════════════════════════════════════
 function fileToBase64(file){
-  return new Promise((res,rej)=>{
-    const r=new FileReader();
-    r.onload=e=>res(e.target.result);
-    r.onerror=rej;
-    r.readAsDataURL(file);
-  });
+  return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file)});
 }
-
 async function compressImage(b64,maxSide){
-  maxSide = maxSide || 1400;
   return new Promise(resolve=>{
     const img=new Image();
     img.onload=()=>{
@@ -463,11 +417,9 @@ async function compressImage(b64,maxSide){
       c.getContext('2d').drawImage(img,0,0,w,h);
       resolve(c.toDataURL('image/jpeg',0.88));
     };
-    img.onerror=()=>resolve(b64);
-    img.src=b64;
+    img.onerror=()=>resolve(b64);img.src=b64;
   });
 }
-
 async function handleFile(file,type){
   if(!file||!file.type.startsWith('image/')){showToast('Fichier non-image','error');return}
   const raw=await fileToBase64(file);
@@ -475,590 +427,251 @@ async function handleFile(file,type){
   if(type==='planche')state.plancheBase64=compressed;
   else state.visageBase64=compressed;
   renderUpload(type,compressed);
-  debugLog('success','UPLOAD',type+' chargé ('+Math.round(compressed.length/1024)+' Ko)');
-  journalLog(type==='planche'?'Planche BD chargée.':'Visage chargé.','success');
   updateLaunchBtn();
 }
-
 function renderUpload(type,base64){
   const zone=document.getElementById('zone-'+type);
   if(!zone)return;
   zone.classList.add('has-image');
-  zone.innerHTML='<img src="'+base64+'" alt="'+type+'"><button class="remove-btn" data-remove="'+type+'">✕</button>';
-  zone.querySelector('[data-remove]').addEventListener('click',e=>{
+  zone.innerHTML='<img src="'+base64+'"><button class="remove-btn" data-remove="'+type+'">✕</button>';
+  zone.querySelector('[data-remove]').onclick=(e)=>{
     e.stopPropagation();
-    if(type==='planche')state.plancheBase64=null;
-    else state.visageBase64=null;
-    resetUpload(type);
-    updateLaunchBtn();
-  });
+    if(type==='planche')state.plancheBase64=null;else state.visageBase64=null;
+    resetUpload(type);updateLaunchBtn();
+  };
 }
-
 function resetUpload(type){
   const zone=document.getElementById('zone-'+type);
   if(!zone)return;
   zone.classList.remove('has-image');
-  const isPlanche=type==='planche';
-  zone.innerHTML='<input type="file" accept="image/*" id="file-'+type+'">'+
-    '<div class="up-icon">'+(isPlanche?'🖼️':'👤')+'</div>'+
-    '<div class="up-text"><strong>'+(isPlanche?'PLANCHE BD ORIGINALE':'TON VISAGE')+'</strong>'+(isPlanche?'Ta planche de BD complète':'Portrait face caméra')+'</div>';
+  const isP=type==='planche';
+  zone.innerHTML='<input type="file" accept="image/*" id="file-'+type+'"><div class="up-icon">'+(isP?'🖼️':'👤')+'</div><div class="up-text"><strong>'+(isP?'PLANCHE BD ORIGINALE':'TON VISAGE')+'</strong>'+(isP?'Ta planche de BD complète':'Portrait face caméra')+'</div>';
   bindUpload(type);
 }
-
 function bindUpload(type){
-  const input=document.getElementById('file-'+type);
-  if(!input)return;
-  input.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];if(f)handleFile(f,type)});
+  document.getElementById('file-'+type).onchange=e=>{const f=e.target.files[0];if(f)handleFile(f,type)};
 }
-
 function updateLaunchBtn(){
+  const hasKey=state.keys.length>0;
+  const hasImgs=!!state.plancheBase64&&!!state.visageBase64;
   const btn=document.getElementById('launch-btn');
-  if(!btn)return;
-  const hasKey=!!getKey();
-  const hasPlanche=!!state.plancheBase64;
-  const hasVisage=!!state.visageBase64;
-  btn.disabled=!hasKey||!hasPlanche||!hasVisage||state.isRunning;
+  btn.disabled=!hasKey||!hasImgs||state.isRunning;
   if(state.isRunning)btn.innerHTML='⏳ Génération en cours…';
-  else if(!hasKey)btn.innerHTML='🔑 Ajoutez votre clé API';
-  else if(!hasPlanche)btn.innerHTML='🖼️ Chargez la planche BD';
-  else if(!hasVisage)btn.innerHTML='👤 Chargez votre visage';
-  else btn.innerHTML='🎬 GÉNÉRER LA BD ANIMÉE<span style="display:block;font-size:.65rem;letter-spacing:.15em;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">'+state.nbCases+' cases · '+Math.round(state.durVideo/24)+'s par vidéo</span>';
+  else if(!hasKey)btn.innerHTML='🔑 Ajoutez une clé API';
+  else if(!hasImgs)btn.innerHTML='🖼️ Chargez les 2 photos';
+  else btn.innerHTML='🎬 GÉNÉRER LA BD ANIMÉE<span style="display:block;font-size:.65rem;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">'+state.nbCases+' cases</span>';
 }
 
 // ══════════════════════════════════════════════════════════════════
-// API FETCH (Plus patient pour les erreurs 503)
+// API FETCH (Avec rotation de clés)
 // ══════════════════════════════════════════════════════════════════
 async function apiFetch(url,options,label,maxAttempts){
-  options=options||{};
-  label=label||'API';
-  maxAttempts=maxAttempts||10;
+  maxAttempts=maxAttempts||12;
   let lastErr=null;
   for(let attempt=0;attempt<maxAttempts;attempt++){
     if(state.stopRequested)throw new Error('Arrêt demandé');
+    const key=getCurrentKey();
     try{
-      const headers=Object.assign({},options.headers||{},{'Authorization':'Bearer '+getKey()});
-      debugLog('api','REQ '+label,(options.method||'GET')+' '+url.slice(0,80)+'… (essai '+(attempt+1)+')');
-      const t0=Date.now();
+      const headers=Object.assign({},options.headers||{},{'Authorization':'Bearer '+key});
+      debugLog('api','REQ '+label,'Clé '+(state.currentKeyIndex+1)+'… (essai '+(attempt+1)+')');
       const res=await fetch(url,Object.assign({},options,{headers}));
-      const dt=Date.now()-t0;
-      debugLog('response','RÉP '+label,'HTTP '+res.status+' en '+dt+'ms');
+      debugLog('response','RÉP '+label,'HTTP '+res.status);
       if(res.ok)return res;
-      if([400,401,403,404].includes(res.status)){
-        const err=await res.text().catch(()=>'');
-        throw new Error('HTTP '+res.status+' — '+err.slice(0,200));
+      if([400,401,403,404].includes(res.status)) throw new Error('HTTP '+res.status);
+      
+      if(res.status===429 || res.status===503){
+        // Rotation de clé si on en a plusieurs
+        if(state.keys.length>1){
+          rotateKey();
+          debugLog('warn','SERVICE','HTTP '+res.status+' → Rotation de clé');
+          await sleep(2000);continue;
+        } else {
+          const wait=Math.min(150,15+attempt*15);
+          debugLog('warn','SERVICE','HTTP '+res.status+' → attente '+wait+'s');
+          setStatus('Serveur surchargé — attente '+wait+'s');
+          await sleep(wait*1000);continue;
+        }
       }
-      if(res.status===429){
-        const wait=Math.min(180,20+attempt*20);
-        debugLog('warn','RATELIMIT','429 → attente '+wait+'s');
-        setStatus('Limite API — attente '+wait+'s');
-        await sleep(wait*1000);continue;
-      }
-      if([500,502,503,504,520].includes(res.status)){
-        const wait=Math.min(180,15+attempt*15);
-        debugLog('warn','SERVICE','HTTP '+res.status+' → attente '+wait+'s');
-        setStatus('Serveur surchargé — attente '+wait+'s');
-        await sleep(wait*1000);continue;
-      }
-      const wait=Math.min(60,6+attempt*5);
-      await sleep(wait*1000);
+      await sleep(5000);
     }catch(e){
       if(e.message==='Arrêt demandé')throw e;
       if(/^HTTP (4\d\d)/.test(e.message))throw e;
       lastErr=e;
-      const wait=Math.min(45,4+attempt*4);
-      debugLog('warn','NETWORK',e.message+' → retry '+wait+'s');
-      await sleep(wait*1000);
+      await sleep(5000);
     }
   }
   throw lastErr||new Error('Échec '+label);
 }
 
-function parseScript(text){
-  const cases=[];
-  const lines=text.split('\n');
-  let currentCase=null;
-  let currentDialogue='';
-  for(const line of lines){
-    const trimmed=line.trim();
-    if(!trimmed)continue;
-    const caseMatch=trimmed.match(/^Case\s+(\d+)\s*[—\-–:]\s*(.+)$/i);
-    if(caseMatch){
-      if(currentCase){currentCase.dialogue=currentDialogue.trim();cases.push(currentCase)}
-      currentCase={num:parseInt(caseMatch[1]),desc:caseMatch[2].trim(),dialogue:''};
-      currentDialogue='';
-      continue;
-    }
-    const dialogMatch=trimmed.match(/^Dialogue\s*:\s*(.+)$/i);
-    if(dialogMatch){currentDialogue=dialogMatch[1].trim();continue}
-    if(currentCase&&!currentDialogue){
-      currentCase.desc+=' '+trimmed;
-    } else if(currentCase){
-      currentDialogue+=' '+trimmed;
-    }
-  }
-  if(currentCase){currentCase.dialogue=currentDialogue.trim();cases.push(currentCase)}
-  debugLog('info','SCRIPT',cases.length+' cases parsées');
-  return cases;
-}
-
-function getStylePrompt(style){
-  const styles={
-    'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors, clean Hergé/Uderzo inspired rendering, comic book panel with a thin black border',
-    'realiste':'realistic comic book style, painterly rendering, dramatic lighting, rich colors, detailed shading, adult graphic novel aesthetic',
-    'cartoon':'colorful cartoon style, bold thick outlines, simple shapes, vibrant flat colors, humorous exaggerated expressions, kids comic book',
-    'manga':'black and white japanese manga style, screentones, dynamic ink lines, expressive eyes, dramatic angles, shonen aesthetic',
-    'aquarelle':'soft watercolor illustration style, gentle bleeding edges, paper texture, pastel washes, delicate ink outlines, poetic children book illustration',
-    'encre':'black ink illustration style, hand-drawn brushwork, high contrast, white paper background, minimalist, expressive, no color'
-  };
-  return styles[style]||styles['franco-belge'];
-}
-
+// ══════════════════════════════════════════════════════════════════
+// GÉNÉRATION IMAGE / VIDÉO
+// ══════════════════════════════════════════════════════════════════
 async function generateCaseImage(caseData, index, total){
-  const stylePrompt=getStylePrompt(state.selectedStyle);
-  const dialogue=caseData.dialogue?'Dialogue (in French, inside a speech bubble at the bottom): « '+caseData.dialogue+' »':'Silent panel (no speech bubble).';
-  const prompt=[
-    'CREATE ONE COMIC BOOK PANEL in the following style:',
-    stylePrompt,
-    '',
-    'PANEL CONTENT (French bande dessinée scene):',
-    'Scene: '+caseData.desc,
-    dialogue,
-    '',
-    'CHARACTER (must match the provided reference face EXACTLY):',
-    '- The main character is a middle-aged man with a bald head, thin-rimmed round glasses, short stubble beard, calm neutral expression, wearing a black technical jacket with a yellow mountain logo on the left shoulder and a zipped high collar.',
-    '- His face is IDENTICAL to the reference photo. Same glasses, same beard, same head shape.',
-    '- Rendered in the comic book style above (flat colors, thick outlines).',
-    '',
-    'OTHER CHARACTERS (if the scene mentions an apprentice):',
-    '- A young apprentice in blue overalls, dark hair, curious expression.',
-    '',
-    'SETTING: precision machine workshop, CNC machines, metallic parts on workbenches, warm yellow fluorescent lighting, industrial atmosphere.',
-    '',
-    'STRICT RULES:',
-    '- ONE single panel only. Panel number '+index+' of '+total+'.',
-    '- If dialogue provided, add ONE speech bubble at the bottom with the EXACT French text.',
-    '- No text outside the speech bubble. No watermarks. No signature.',
-    '- Respect the art style faithfully.',
-    '- The main character face MUST be recognizable as the reference photo.'
-  ].join('\n');
-  
-  // MODIFICATION ICI : Passage en ratio 9:16 pour être compatible avec l'API vidéo
-  const body={
-    model:MODEL_IMAGE,
-    prompt:prompt,
-    n:1,
-    size:'1K',
-    ratio:'9:16',
-    extra_body:{
-      image:[state.visageBase64],
-      response_format:'url'
-    }
+  const styles={
+    'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors',
+    'realiste':'realistic comic book style, painterly rendering, dramatic lighting, rich colors',
+    'cartoon':'colorful cartoon style, bold thick outlines, simple shapes, vibrant flat colors',
+    'manga':'black and white japanese manga style, screentones, dynamic ink lines',
+    'aquarelle':'soft watercolor illustration style, gentle bleeding edges, paper texture',
+    'encre':'black ink illustration style, high contrast, white paper background'
   };
-  const res=await apiFetch(API_BASE+'/images/generations',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(body)
-  },'Image Case '+index);
+  const s=styles[state.selectedStyle]||styles['franco-belge'];
+  const d=caseData.dialogue?'Dialogue (French, in speech bubble): « '+caseData.dialogue+' »':'Silent panel.';
+  const prompt=[
+    'COMIC BOOK PANEL, vertical 9:16.',
+    'STYLE: '+s,
+    'SCENE: '+caseData.desc,
+    d,
+    'CHARACTER (match reference face EXACTLY): middle-aged man, bald, thin round glasses, short stubble, black jacket.',
+    'SETTING: precision machine workshop, yellow fluorescent lighting.',
+    'No text outside bubble. No watermarks.'
+  ].join('\n');
+
+  const body={
+    model:MODEL_IMAGE, prompt, n:1, size:'1K', ratio:'9:16',
+    extra_body:{image:[state.visageBase64],response_format:'url'}
+  };
+  const res=await apiFetch(API_BASE+'/images/generations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Image '+index);
   const data=await res.json();
-  const item=data.data&&data.data[0];
-  if(!item)throw new Error('Pas d\'image retournée');
-  const url=item.url||(item.b64_json?'data:image/png;base64,'+item.b64_json:null);
-  if(!url)throw new Error('Format image inconnu');
-  return url;
+  return data.data[0].url||('data:image/png;base64,'+data.data[0].b64_json);
 }
 
 async function createVideoTask(prompt,imageUrl,duration){
-  // MODIFICATION ICI : Suppression de aspect_ratio:"4:3" qui faisait planter le serveur
-  const body={
-    model:MODEL_VIDEO,
-    prompt:prompt,
-    image:imageUrl,
-    num_frames:duration,
-    frame_rate:FRAME_RATE
-  };
-  const res=await apiFetch(API_BASE+'/videos',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(body)
-  },'Vidéo');
+  const body={model:MODEL_VIDEO, prompt, image:imageUrl, num_frames:duration, frame_rate:FRAME_RATE};
+  const res=await apiFetch(API_BASE+'/videos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Vidéo');
   const data=await res.json();
-  const vid=data.video_id||data.id||data.task_id;
-  if(!vid)throw new Error('Pas de video_id');
-  return vid;
+  return data.video_id||data.id||data.task_id;
 }
 
 async function pollVideo(videoId,onProgress){
-  let rem=VIDEO_FIRST_POLL_DELAY_SEC;
-  while(rem>0){
-    if(state.stopRequested)throw new Error('Arrêt demandé');
-    onProgress('Préparation — '+rem+'s');
-    await sleep(1000);rem--;
-  }
-  for(let attempt=0;attempt<VIDEO_MAX_POLL_ATTEMPTS;attempt++){
-    if(state.stopRequested)throw new Error('Arrêt demandé');
-    if(attempt>0){
-      const idx=Math.min(attempt-1,VIDEO_POLL_INTERVALS.length-1);
-      let r=VIDEO_POLL_INTERVALS[idx];
-      while(r>0){if(state.stopRequested)throw new Error('Arrêt demandé');onProgress('Création — '+r+'s');await sleep(1000);r--}
-    }
+  let rem=60;
+  while(rem>0){if(state.stopRequested)throw new Error('Arrêt');onProgress('Préparation '+rem+'s');await sleep(1000);rem--}
+  for(let attempt=0;attempt<100;attempt++){
+    if(state.stopRequested)throw new Error('Arrêt');
+    if(attempt>0){let r=10;while(r>0){if(state.stopRequested)throw new Error('Arrêt');onProgress('Création '+r+'s');await sleep(1000);r--}}
     const url=POLL_BASE+'?video_id='+encodeURIComponent(videoId)+'&model_name='+encodeURIComponent(MODEL_VIDEO);
     const res=await apiFetch(url,{method:'GET'},'Polling');
     const d=await res.json();
-    const status=d.status||'unknown';
-    const progress=d.progress||0;
-    onProgress('Création — '+progress+'%');
-    if(status==='completed'||status==='succeeded'||status==='done'){
-      const videoUrl=(d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
-      if(!videoUrl)throw new Error('Terminé mais pas d\'URL');
-      return videoUrl;
+    onProgress(d.progress+'%');
+    if(d.status==='completed'||d.status==='succeeded'||d.status==='done'){
+      return (d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
     }
-    if(status==='failed'||status==='error'||status==='cancelled')throw new Error('Échec ('+status+')');
+    if(d.status==='failed')throw new Error('Échec vidéo');
   }
   throw new Error('Timeout');
 }
 
+// ══════════════════════════════════════════════════════════════════
+// UI & PIPELINE
+// ══════════════════════════════════════════════════════════════════
 function renderCases(){
   const grid=document.getElementById('cases-grid');
-  const cont=document.getElementById('cases-container');
-  if(!grid||!cont)return;
-  cont.style.display='block';
   grid.innerHTML=state.cases.map((c,i)=>{
-    let body='';
-    let cls='generating';
+    let body='', cls='generating';
     if(c.status==='pending')body='<div class="case-placeholder">En attente…</div>';
-    else if(c.status==='loading-img')body='<div class="case-placeholder"><div class="spinner-mini"></div><span>Image…</span></div>';
-    else if(c.status==='done-img'){body='<img src="'+c.imageUrl+'" alt="Case '+(i+1)+'">';cls='done'}
-    else if(c.status==='loading-vid')body='<img src="'+c.imageUrl+'" style="opacity:.5"><div class="case-placeholder" style="position:absolute;inset:0;background:transparent"><div class="spinner-mini"></div><span>'+esc(c.progress||'Vidéo…')+'</span></div>';
-    else if(c.status==='done-vid'){body='<video src="'+c.videoUrl+'" controls preload="metadata" playsinline></video>';cls='done'}
-    else if(c.status==='error'){body='<div class="case-placeholder" style="color:var(--err)">Erreur : '+esc(c.error||'')+'</div>';cls='error'}
-    return '<div class="case-card '+cls+'" style="position:relative">'+
-      '<div class="case-card-header"><span class="case-num">Case '+(i+1)+'</span><span>'+(c.status==='done-vid'?'✓':c.status==='error'?'✕':'…')+'</span></div>'+
-      '<div class="case-card-body">'+body+
-      (c.dialogue?'<div class="case-dialogue">« '+esc(c.dialogue)+' »</div>':'')+
-      '</div></div>';
+    else if(c.status==='loading-img')body='<div class="case-placeholder"><div class="spinner-mini"></div>Image…</div>';
+    else if(c.status==='done-img'){body='<img src="'+c.imageUrl+'">';cls='done'}
+    else if(c.status==='loading-vid')body='<img src="'+c.imageUrl+'" style="opacity:.5"><div class="case-placeholder" style="position:absolute;inset:0;background:transparent"><div class="spinner-mini"></div><span>'+esc(c.progress||'')+'</span></div>';
+    else if(c.status==='done-vid'){body='<video src="'+c.videoUrl+'" controls playsinline></video>';cls='done'}
+    else if(c.status==='error'){body='<div class="case-placeholder" style="color:var(--err)">Erreur</div>';cls='error'}
+    return '<div class="case-card '+cls+'"><div class="case-card-header"><span class="case-num">Case '+(i+1)+'</span></div><div class="case-card-body">'+body+'</div></div>';
   }).join('');
 }
 
-function setStep(step){
-  const bar=document.getElementById('step-bar');
-  if(bar)bar.style.display='flex';
-  const order=['analyse','images','videos','film'];
-  const idx=order.indexOf(step);
-  document.querySelectorAll('.step').forEach(el=>{
-    el.classList.remove('active','done');
-    const i=order.indexOf(el.dataset.step);
-    if(i<idx)el.classList.add('done');
-    else if(i===idx)el.classList.add('active');
-  });
-}
-
-function updateStats(){
-  const sp=document.getElementById('stats-panel');
-  if(sp)sp.classList.remove('hidden');
-  const cases=state.cases.length;
-  const imgs=state.cases.filter(c=>c.imageUrl).length;
-  const vids=state.cases.filter(c=>c.videoUrl).length;
-  const elapsed=Math.round((Date.now()-state.startTime)/1000);
-  const el1=document.getElementById('stat-cases');
-  const el2=document.getElementById('stat-images');
-  const el3=document.getElementById('stat-videos');
-  const el4=document.getElementById('stat-time');
-  if(el1)el1.textContent=cases;
-  if(el2)el2.textContent=imgs;
-  if(el3)el3.textContent=vids;
-  if(el4)el4.textContent=elapsed+'s';
-}
-
-async function runFullPipeline(){
+async function startPipeline(){
   if(state.isRunning)return;
-  if(!getKey()){showToast('Ajoutez votre clé API','error');return}
-  if(!state.plancheBase64||!state.visageBase64){showToast('Chargez les 2 photos','error');return}
-  const scriptText=document.getElementById('script-input').value;
-  state.parsedScript=parseScript(scriptText);
-  if(state.parsedScript.length===0){showToast('Script vide ou invalide','error');return}
-  state.nbCases=Math.min(state.parsedScript.length,parseInt(document.getElementById('nb-cases').value,10)||6);
-  state.durVideo=parseInt(document.getElementById('dur-video').value,10)||145;
-  state.mode=document.getElementById('mode-select').value;
-  state.parsedScript=state.parsedScript.slice(0,state.nbCases);
   state.isRunning=true;
   state.stopRequested=false;
-  state.startTime=Date.now();
-  state.cases=state.parsedScript.map(c=>({...c,status:'pending',imageUrl:null,videoUrl:null,progress:null,error:null}));
-  document.getElementById('stop-btn').classList.add('visible');
-  document.getElementById('launch-btn').disabled=true;
+  const script=document.getElementById('script-input').value;
+  
+  // Parser simple
+  const parsed=[];let cur=null,dlg='';
+  for(let l of script.split('\n')){
+    l=l.trim();if(!l)continue;
+    let m=l.match(/^Case\s+(\d+)\s*[—\-–:]\s*(.+)$/i);
+    if(m){if(cur){cur.dialogue=dlg;parsed.push(cur)}cur={desc:m[2],dialogue:''};dlg='';continue}
+    m=l.match(/^Dialogue\s*:\s*(.+)$/i);if(m){dlg=m[1];continue}
+    if(cur&&!dlg)cur.desc+=' '+l;else if(cur)dlg+=' '+l;
+  }
+  if(cur){cur.dialogue=dlg;parsed.push(cur)}
+  
+  state.cases=parsed.slice(0,state.nbCases).map(c=>({...c,status:'pending',imageUrl:null,videoUrl:null}));
   document.getElementById('cases-container').style.display='block';
-  document.getElementById('film-container').style.display='none';
+  document.getElementById('launch-videos-btn').classList.add('hidden');
+  document.getElementById('launch-btn').disabled=true;
+  document.getElementById('stop-btn').classList.add('visible');
   renderCases();
-  setStep('analyse');
-  journalLog('Génération lancée. '+state.nbCases+' cases.','highlight');
-  showToast('Génération lancée','success');
+
   try{
-    setStatus('Étape 1/4 — Analyse…');
-    await sleep(800);
-    updateStats();
-    setStep('images');
-    setStatus('Étape 2/4 — Cases BD…');
-    const queue=[];
-    let running=0;
-    let lastStart=0;
-    let completedImages=0;
-    const processNext=async()=>{
-      if(running>=IMAGE_PARALLEL)return;
-      const job=queue.shift();
-      if(!job)return;
-      const wait=Math.max(0,lastStart+IMAGE_INTERVAL_MS-Date.now());
-      if(wait>0)await sleep(wait);
-      running++;lastStart=Date.now();
-      try{await job()}catch(e){}
-      running--;
-      if(queue.length)processNext();
-    };
-    const imagePromises=state.cases.map((c,i)=>new Promise(resolve=>{
-      queue.push(async()=>{
-        if(state.stopRequested){resolve();return}
-        c.status='loading-img';renderCases();
-        try{
-          const url=await generateCaseImage(c,i+1,state.cases.length);
-          c.imageUrl=url;c.status='done-img';
-          renderCases();updateStats();
-          completedImages++;
-          journalLog('Case '+(i+1)+' générée ('+completedImages+'/'+state.cases.length+').','image');
-        }catch(e){
-          c.status='error';c.error=e.message;
-          renderCases();
-          journalLog('Case '+(i+1)+' échouée.','error');
-        }
-        resolve();
-      });
-      processNext();
-    }));
-    for(let i=0;i<Math.min(IMAGE_PARALLEL,queue.length);i++)processNext();
-    await Promise.allSettled(imagePromises);
-    if(state.stopRequested)throw new Error('Arrêt demandé');
-    if(state.mode==='images'){
-      setStep('film');
-      setStatus('✦ Cases prêtes ✦');
-      showToast('Cases générées ✓','success');
-      await sleep(3000);
-      setStatus(null);
-      state.isRunning=false;
-      document.getElementById('stop-btn').classList.remove('visible');
-      updateLaunchBtn();
-      return;
-    }
-    setStep('videos');
-    setStatus('Étape 3/4 — Vidéos…');
-    let completedVideos=0;
-    const maxVideos = state.mode==='images+video1' ? 1 : state.cases.length;
+    // 1. IMAGES
+    setStatus('Génération des images…');
     for(let i=0;i<state.cases.length;i++){
       if(state.stopRequested)break;
-      if(completedVideos>=maxVideos)break;
-      const c=state.cases[i];
-      if(c.status!=='done-img')continue;
-      c.status='loading-vid';c.progress='Initialisation…';
-      renderCases();
-      setStatus('Vidéo '+(i+1)+'/'+state.cases.length);
+      state.cases[i].status='loading-img';renderCases();
       try{
-        const videoPrompt=[
-          'Animate this EXACT comic book panel as a subtle motion comic.',
-          'The character must remain IDENTICAL: same face, same expression, same clothes, same position, same composition.',
-          'Add only subtle animation: slow camera push-in (5% zoom), slight breathing motion.',
-          'Style: animated franco-belgian bande dessinée, ligne claire.',
-          'No 3D. No anime. No realistic rendering. Keep the flat comic colors.',
-          'No music. Duration: '+Math.round(state.durVideo/24)+' seconds.'
-        ].join('\n');
-        const vid=await createVideoTask(videoPrompt,c.imageUrl,state.durVideo);
-        const videoUrl=await pollVideo(vid,(prog)=>{
-          c.progress=prog;
-          renderCases();
-          setStatus('Vidéo '+(i+1)+'/'+state.cases.length+' — '+prog);
-        });
-        c.videoUrl=videoUrl;c.status='done-vid';
-        renderCases();updateStats();
-        completedVideos++;
-        journalLog('Case '+(i+1)+' animée.','video');
-        showToast('Case '+(i+1)+' animée ✓','success');
-      }catch(e){
-        if(e.message==='Arrêt demandé')break;
-        c.status='error';c.error=e.message;
-        renderCases();
-      }
-      if(completedVideos<maxVideos && i<state.cases.length-1 && !state.stopRequested){
-        for(let r=62;r>0;r--){
-          if(state.stopRequested)break;
-          setStatus('Pause '+r+'s');
-          await sleep(1000);
-        }
-      }
+        state.cases[i].imageUrl=await generateCaseImage(state.cases[i],i+1,state.cases.length);
+        state.cases[i].status='done-img';
+      }catch(e){state.cases[i].status='error'}
+      renderCases();
     }
-    setStep('film');
-    setStatus('Étape 4/4 — Finalisation…');
-    await sleep(800);
-    const readyCases=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
-    const filmContainer=document.getElementById('film-container');
-    const filmPreview=document.getElementById('film-preview');
-    if(readyCases.length>0){
-      if(filmContainer)filmContainer.style.display='block';
-      if(filmPreview)filmPreview.innerHTML='<strong>✦ '+readyCases.length+'/'+state.cases.length+' cases animées</strong><br>Clique sur Diffuser.';
-      const pfb=document.getElementById('play-film-btn');
-      const dfb=document.getElementById('download-film-btn');
-      if(pfb)pfb.disabled=false;
-      if(dfb)dfb.disabled=false;
-      setStatus('✦ BD animée prête ✦');
-      showToast(readyCases.length+' cases animées ✓','success');
+    
+    // 2. VIDÉOS (Auto si mode complet)
+    const mode=document.getElementById('mode-select').value;
+    if(mode!=='images'&&!state.stopRequested){
+      document.getElementById('launch-videos-btn').classList.remove('hidden');
+      await runVideosOnly();
     }
-    await sleep(3000);
-    setStatus(null);
-  }catch(e){
-    if(e.message==='Arrêt demandé'){
-      setStatus('Arrêté');
-      await sleep(1500);setStatus(null);
-    } else {
-      setStatus('Erreur : '+e.message.slice(0,60));
-      showToast('Erreur : '+e.message.slice(0,50),'error',4000);
-      await sleep(3000);setStatus(null);
-    }
-  }
+  }catch(e){}
+  
   state.isRunning=false;
-  state.stopRequested=false;
   document.getElementById('stop-btn').classList.remove('visible');
   updateLaunchBtn();
 }
 
-async function playFilm(){
-  const ready=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
-  if(!ready.length){showToast('Aucune vidéo','error');return}
-  if(state.isPlayingFilm)return;
-  state.isPlayingFilm=true;
-  updateLaunchBtn();
-  const overlay=document.getElementById('player-overlay');
-  const canvas=document.getElementById('player-canvas');
-  const hint=document.getElementById('player-hint');
-  if(!overlay||!canvas)return;
-  const dpr=Math.min(window.devicePixelRatio||1,2);
-  canvas.width=Math.round(window.innerWidth*dpr);
-  canvas.height=Math.round(window.innerHeight*dpr);
-  canvas.style.width=window.innerWidth+'px';
-  canvas.style.height=window.innerHeight+'px';
-  const ctx=canvas.getContext('2d');
-  overlay.classList.add('visible');
-  if(hint){hint.classList.remove('hidden');setTimeout(()=>hint.classList.add('hidden'),3000)}
-  for(let i=0;i<ready.length;i++){
-    if(!state.isPlayingFilm)break;
-    await playOneVideo(ready[i].videoUrl,ctx,canvas);
+async function runVideosOnly(){
+  state.isRunning=true;
+  document.getElementById('launch-videos-btn').disabled=true;
+  setStatus('Génération des vidéos…');
+  
+  for(let i=0;i<state.cases.length;i++){
+    const c=state.cases[i];
+    if(!c.imageUrl||c.status==='done-vid'||state.stopRequested)continue;
+    
+    c.status='loading-vid';renderCases();
+    try{
+      const vid=await createVideoTask('Animate this comic panel subtly. Character identical.',c.imageUrl,state.durVideo);
+      c.videoUrl=await pollVideo(vid,p=>{c.progress=p;renderCases()});
+      c.status='done-vid';
+    }catch(e){c.status='error';}
+    renderCases();
+    if(i<state.cases.length-1&&!state.stopRequested)await sleep(5000);
   }
-  stopFilmPlayback();
+  
+  document.getElementById('launch-videos-btn').disabled=false;
+  state.isRunning=false;
 }
 
-function playOneVideo(url,ctx,canvas){
-  return new Promise(resolve=>{
-    const v=document.createElement('video');
-    v.src=url;v.playsInline=true;v.muted=false;v.crossOrigin='anonymous';
-    let finished=false;
-    const finish=()=>{if(finished)return;finished=true;resolve()};
-    v.onloadedmetadata=()=>{
-      const draw=()=>{
-        ctx.fillStyle='#000';ctx.fillRect(0,0,canvas.width,canvas.height);
-        const ar=v.videoWidth/v.videoHeight;
-        const car=canvas.width/canvas.height;
-        let dw,dh,dx,dy;
-        if(ar>car){dw=canvas.width;dh=canvas.width/ar;dx=0;dy=(canvas.height-dh)/2}
-        else{dh=canvas.height;dw=canvas.height*ar;dx=(canvas.width-dw)/2;dy=0}
-        try{ctx.drawImage(v,dx,dy,dw,dh)}catch(e){}
-      };
-      const loop=()=>{
-        if(!state.isPlayingFilm||v.paused||v.ended){finish();return}
-        draw();
-        state.playRAF=requestAnimationFrame(loop);
-      };
-      v.play().then(loop).catch(finish);
-    };
-    v.onended=finish;
-    v.onerror=finish;
-    v.load();
-  });
-}
-
-function stopFilmPlayback(){
-  state.isPlayingFilm=false;
-  if(state.playRAF)cancelAnimationFrame(state.playRAF);
-  state.playRAF=null;
-  const overlay=document.getElementById('player-overlay');
-  if(overlay)overlay.classList.remove('visible');
-  updateLaunchBtn();
-}
-
-function downloadFilm(){
-  const ready=state.cases.filter(c=>c.status==='done-vid'&&c.videoUrl);
-  if(!ready.length){showToast('Aucune vidéo','error');return}
-  ready.forEach((c,i)=>{
-    setTimeout(()=>{
-      const a=document.createElement('a');
-      a.href=c.videoUrl;
-      a.download='case-'+String(i+1).padStart(2,'0')+'.mp4';
-      a.target='_blank';
-      document.body.appendChild(a);a.click();document.body.removeChild(a);
-    },i*400);
-  });
-  showToast('Téléchargement de '+ready.length+' cases…','success');
-}
-
-(function init(){
-  const apiInput=document.getElementById('api-key-input');
-  if(apiInput){
-    apiInput.addEventListener('change',saveKey);
-    apiInput.addEventListener('blur',saveKey);
-  }
-  bindUpload('planche');
-  bindUpload('visage');
-  document.querySelectorAll('.preset').forEach(p=>{
-    p.addEventListener('click',()=>{
-      document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
-      p.classList.add('active');
-      state.selectedStyle=p.dataset.style;
-    });
-  });
-  const nbCasesSel=document.getElementById('nb-cases');
-  if(nbCasesSel)nbCasesSel.addEventListener('change',e=>{state.nbCases=parseInt(e.target.value,10);updateLaunchBtn()});
-  const durVideoSel=document.getElementById('dur-video');
-  if(durVideoSel)durVideoSel.addEventListener('change',e=>{state.durVideo=parseInt(e.target.value,10);updateLaunchBtn()});
-  const modeSel=document.getElementById('mode-select');
-  if(modeSel)modeSel.addEventListener('change',e=>{state.mode=e.target.value});
-  const launchBtn=document.getElementById('launch-btn');
-  if(launchBtn)launchBtn.addEventListener('click',runFullPipeline);
-  const stopBtn=document.getElementById('stop-btn');
-  if(stopBtn)stopBtn.addEventListener('click',()=>{
-    state.stopRequested=true;
-    setStatus('Arrêt en cours…');
-  });
-  const playBtn=document.getElementById('play-film-btn');
-  if(playBtn)playBtn.addEventListener('click',playFilm);
-  const dlBtn=document.getElementById('download-film-btn');
-  if(dlBtn)dlBtn.addEventListener('click',downloadFilm);
-  const overlay=document.getElementById('player-overlay');
-  if(overlay)overlay.addEventListener('click',stopFilmPlayback);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.isPlayingFilm)stopFilmPlayback()});
-  const dh=document.getElementById('debug-header');
-  if(dh)dh.addEventListener('click',e=>{if(e.target.tagName==='BUTTON')return;toggleDebug()});
-  const dcb=document.getElementById('debug-collapse-btn');
-  if(dcb)dcb.addEventListener('click',e=>{e.stopPropagation();toggleDebug()});
-  const dclb=document.getElementById('debug-clear-btn');
-  if(dclb)dclb.addEventListener('click',e=>{e.stopPropagation();clearDebug()});
-  const dcpb=document.getElementById('debug-copy-btn');
-  if(dcpb)dcpb.addEventListener('click',e=>{e.stopPropagation();copyDebug()});
-  const tj=document.getElementById('tab-journal');
-  if(tj)tj.addEventListener('click',()=>switchTab('journal'));
-  const tt=document.getElementById('tab-tech');
-  if(tt)tt.addEventListener('click',()=>switchTab('tech'));
-  const saved=getKey();
-  if(saved&&apiInput)apiInput.value=saved;
-  updateApiPanel();
-  updateLaunchBtn();
-  journalLog('Application prête. Chargez vos 2 photos puis lancez la génération.','highlight');
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
-  }
-})();
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+loadKeys();
+document.getElementById('api-keys-input').addEventListener('change',saveKeys);
+document.getElementById('api-keys-input').addEventListener('blur',saveKeys);
+bindUpload('planche');bindUpload('visage');
+document.getElementById('launch-btn').onclick=startPipeline;
+document.getElementById('launch-videos-btn').onclick=runVideosOnly;
+document.getElementById('stop-btn').onclick=()=>{state.stopRequested=true;setStatus('Arrêt…')};
+document.getElementById('debug-header').onclick=e=>{if(e.target.tagName!=='BUTTON')toggleDebug()};
+document.getElementById('debug-collapse-btn').onclick=e=>{e.stopPropagation();toggleDebug()};
+document.getElementById('debug-clear-btn').onclick=e=>{e.stopPropagation();document.getElementById('tech-body').innerHTML='';document.getElementById('journal-body').innerHTML=''};
+document.getElementById('tab-journal').onclick=()=>switchTab('journal');
+document.getElementById('tab-tech').onclick=()=>switchTab('tech');
+document.querySelectorAll('.preset').forEach(p=>p.onclick=()=>{
+  document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
+  p.classList.add('active');state.selectedStyle=p.dataset.style;
+});
+document.getElementById('nb-cases').onchange=e=>{state.nbCases=parseInt(e.target.value);updateLaunchBtn()};
+updateApiPanel();
 </script>
 </body>
 </html>
