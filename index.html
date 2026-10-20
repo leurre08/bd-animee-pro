@@ -73,8 +73,8 @@ textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(22
 .case-card-header{padding:.5rem .7rem;font-size:.7rem;font-family:var(--fm);color:var(--dim);display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);gap:.5rem}
 .case-card-header .case-num{color:var(--acc);font-weight:700}
 .case-card-body{padding:.6rem;flex:1;display:flex;flex-direction:column}
-.case-card-body img,.case-card-body video{width:100%;border-radius:3px;background:#000;display:block;aspect-ratio:9/16;object-fit:cover}
-.case-placeholder{width:100%;aspect-ratio:9/16;background:#0a0a12;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:.7rem;font-family:var(--fm);flex-direction:column;gap:.5rem;text-align:center;padding:.5rem}
+.case-card-body img,.case-card-body video{width:100%;border-radius:3px;background:#000;display:block;aspect-ratio:4/3;object-fit:cover}
+.case-placeholder{width:100%;aspect-ratio:4/3;background:#0a0a12;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:.7rem;font-family:var(--fm);flex-direction:column;gap:.5rem;text-align:center;padding:.5rem}
 .spinner-mini{width:14px;height:14px;border:2px solid rgba(229,193,90,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .case-dialogue{font-size:.72rem;color:var(--acc);margin-top:.5rem;font-style:italic;text-align:center;padding:.4rem .6rem;background:rgba(229,193,90,.05);border-radius:3px;border-left:2px solid var(--acc)}
@@ -126,14 +126,13 @@ textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(22
 <header>
 <h1>BD Animée Pro</h1>
 <p class="subtitle">Planche + Visage → BD complète → Animation → Film</p>
-<p class="version-tag">v2.0 · Multi-Clés</p>
+<p class="version-tag">v3.0 · Retour au format 4:3</p>
 </header>
 
 <div class="panel" id="api-panel">
-<h2>🔑 Clés API Agnes <span class="btn-small" id="api-test-btn" style="font-size:.6rem;padding:.25rem .5rem;background:transparent;border:1px solid var(--border);color:var(--dim);cursor:pointer;border-radius:3px">Tester</span></h2>
+<h2>🔑 Clés API Agnes</h2>
 <textarea id="api-keys-input" placeholder="sk-... (colle une ou plusieurs clés, une par ligne)" rows="3" autocomplete="off" spellcheck="false"></textarea>
 <div class="status" id="api-status-line"><span class="dot"></span><span id="api-status-text">Aucune clé API enregistrée</span></div>
-<div class="hint">Clé gratuite sur <a href="https://platform.agnes-ai.com" target="_blank" rel="noopener">platform.agnes-ai.com</a> → Settings → API Keys. <strong>Plus vous avez de clés, plus vous évitez les erreurs 503.</strong></div>
 </div>
 
 <div class="panel">
@@ -142,12 +141,12 @@ textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(22
 <div class="upload-zone" id="zone-planche">
 <input type="file" accept="image/*" id="file-planche">
 <div class="up-icon">🖼️</div>
-<div class="up-text"><strong>PLANCHE BD ORIGINALE</strong>Ta planche de BD complète</div>
+<div class="up-text"><strong>PLANCHE BD ORIGINALE</strong></div>
 </div>
 <div class="upload-zone" id="zone-visage">
 <input type="file" accept="image/*" id="file-visage">
 <div class="up-icon">👤</div>
-<div class="up-text"><strong>TON VISAGE</strong>Portrait face caméra</div>
+<div class="up-text"><strong>TON VISAGE</strong></div>
 </div>
 </div>
 </div>
@@ -165,7 +164,7 @@ textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(22
 </div>
 
 <div class="panel">
-<h2>📜 Étape 3 — Script (modifiable)</h2>
+<h2>📜 Étape 3 — Script</h2>
 <textarea id="script-input" rows="12">L'usinage et la transmission du savoir-faire
 
 Case 1 — L'atelier au réveil : Le personnage entre dans l'atelier, fraiseuse en arrière-plan, lumière jaune des néons.
@@ -189,17 +188,16 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <h2>⚙️ Étape 4 — Paramètres</h2>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
 <div>
-<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Nombre de cases</label>
-<select id="nb-cases" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit;font-size:.82rem">
+<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase">Cases</label>
+<select id="nb-cases" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit">
 <option value="4">4 cases</option>
 <option value="6" selected>6 cases</option>
 <option value="8">8 cases</option>
-<option value="9">9 cases</option>
 </select>
 </div>
 <div>
-<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.08em">Durée par vidéo</label>
-<select id="dur-video" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit;font-size:.82rem">
+<label style="font-size:.68rem;color:var(--dim);display:block;margin-bottom:.3rem;text-transform:uppercase">Durée vidéo</label>
+<select id="dur-video" style="width:100%;padding:.65rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:inherit">
 <option value="121">5 secondes</option>
 <option value="145" selected>6 secondes</option>
 <option value="169">7 secondes</option>
@@ -211,36 +209,17 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <button type="button" class="btn btn-primary" id="launch-btn" disabled>
 🎬 GÉNÉRER LA BD ANIMÉE
 </button>
-<button type="button" class="btn btn-primary hidden" id="launch-videos-btn" style="background:linear-gradient(135deg,rgba(74,123,200,.2),rgba(74,157,106,.15));color:#6a9be0;border-color:#4a7bc8">🎬 RÉESSAYER LES VIDÉOS SEULES</button>
+<button type="button" class="btn btn-primary hidden" id="launch-videos-btn" style="background:linear-gradient(135deg,rgba(74,123,200,.2),rgba(74,157,106,.15));color:#6a9be0;border-color:#4a7bc8">🎬 RÉESSAYER LES VIDÉOS</button>
 <button type="button" class="btn btn-stop" id="stop-btn">⏹ Arrêter</button>
-
-<div class="step-bar" id="step-bar" style="display:none">
-<div class="step" data-step="analyse">1 · Analyse</div>
-<div class="step" data-step="images">2 · Cases</div>
-<div class="step" data-step="videos">3 · Vidéos</div>
-<div class="step" data-step="film">4 · Film</div>
-</div>
 
 <div id="cases-container" style="display:none">
 <h2 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem">🎨 Cases générées</h2>
 <div class="cases-grid" id="cases-grid"></div>
 </div>
 
-<div id="film-container" class="panel" style="display:none">
-<h2>🎞️ Film final</h2>
-<div style="background:var(--bg2);padding:.8rem;font-size:.78rem;color:var(--dim);margin-bottom:.8rem" id="film-preview">En attente…</div>
-<div style="display:flex;gap:.6rem;margin-top:.8rem">
-<button type="button" class="btn btn-small" id="play-film-btn" style="flex:1;padding:.7rem">▶ Diffuser</button>
-<button type="button" class="btn btn-small" id="download-film-btn" style="flex:1;padding:.7rem">⬇ Télécharger</button>
-</div>
-</div>
-
 <div class="status-bar" id="status-bar"><div class="spinner"></div><span id="status-text">Prêt</span></div>
 <div class="toast" id="toast"><span id="toast-icon">✓</span><span id="toast-text">Message</span></div>
-<div class="player-overlay" id="player-overlay">
-<canvas id="player-canvas"></canvas>
-<div class="player-hint" id="player-hint">Échap ou clic pour quitter</div>
-</div>
+
 <div class="debug-panel" id="debug-panel">
 <div class="debug-header" id="debug-header">
 <div class="debug-tabs">
@@ -248,7 +227,6 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <button type="button" class="debug-tab" id="tab-tech">🖥️ Technique</button>
 </div>
 <div class="debug-actions">
-<button type="button" id="debug-copy-btn">Copier</button>
 <button type="button" id="debug-clear-btn">Effacer</button>
 <button type="button" id="debug-collapse-btn">−</button>
 </div>
@@ -256,40 +234,17 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 <div class="debug-body journal-body" id="journal-body"></div>
 <div class="debug-body hidden" id="tech-body"></div>
 </div>
+
 <script>
-// ══════════════════════════════════════════════════════════════════
-// CONFIGURATION
-// ══════════════════════════════════════════════════════════════════
 const API_BASE = 'https://apihub.agnes-ai.com/v1';
 const POLL_BASE = 'https://apihub.agnes-ai.com/agnesapi';
 const MODEL_TEXT = 'agnes-2.5-flash';
 const MODEL_IMAGE = 'agnes-image-2.1-flash';
 const MODEL_VIDEO = 'agnes-video-v2.0';
 const FRAME_RATE = 24;
-const IMAGE_PARALLEL = 1; 
-const IMAGE_INTERVAL_MS = 5000; 
-const VIDEO_FIRST_POLL_DELAY_SEC = 60;
-const VIDEO_POLL_INTERVALS = [8,8,12,12,20,20,25];
-const VIDEO_MAX_POLL_ATTEMPTS = 100;
 const API_KEYS_STORAGE = 'bd_animee_pro_api_keys';
-const DEBUG_MAX = 500;
 
-const state = {
-  keys: [],
-  currentKeyIndex: 0,
-  plancheBase64: null,
-  visageBase64: null,
-  selectedStyle: 'franco-belge',
-  nbCases: 6,
-  durVideo: 145,
-  parsedScript: [],
-  cases: [],
-  isRunning: false,
-  stopRequested: false,
-  isPlayingFilm: false,
-  playRAF: null,
-  startTime: 0
-};
+const state = { keys: [], currentKeyIndex: 0, plancheBase64: null, visageBase64: null, selectedStyle: 'franco-belge', nbCases: 6, durVideo: 145, cases: [], isRunning: false, stopRequested: false };
 
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
@@ -298,378 +253,220 @@ function nowTime(){return new Date().toLocaleTimeString('fr-FR',{hour12:false})}
 
 let toastTimeout=null;
 function showToast(msg,type='success',dur=2500){
-  const t=document.getElementById('toast');const i=document.getElementById('toast-icon');const x=document.getElementById('toast-text');
-  if(!t||!i||!x)return;
-  t.classList.remove('visible','success','error','warn');void t.offsetWidth;
-  const ic={success:'✓',error:'✕',warn:'⚠'};
-  i.textContent=ic[type]||'✓';x.textContent=msg;
-  t.classList.add(type);requestAnimationFrame(()=>t.classList.add('visible'));
-  if(toastTimeout)clearTimeout(toastTimeout);
-  toastTimeout=setTimeout(()=>t.classList.remove('visible'),dur);
+  const t=document.getElementById('toast'), i=document.getElementById('toast-icon'), x=document.getElementById('toast-text');
+  if(!t||!i||!x)return; t.classList.remove('visible','success','error','warn'); void t.offsetWidth;
+  i.textContent = type==='success'?'✓':(type==='error'?'✕':'⚠'); x.textContent=msg; t.classList.add(type);
+  requestAnimationFrame(()=>t.classList.add('visible')); if(toastTimeout)clearTimeout(toastTimeout); toastTimeout=setTimeout(()=>t.classList.remove('visible'),dur);
 }
 
 function journalLog(msg,level){
-  level = level || 'info';
-  const body = document.getElementById('journal-body');
-  if(!body) return;
-  const icons = { info:'·', highlight:'▶', success:'✅', warn:'⚠️', error:'❌', image:'🖼️', video:'🎬', film:'🎞️', api:'📡' };
-  const icon = icons[level] || '·';
-  const entry = document.createElement('div');
-  entry.className = 'j-entry ' + level;
-  entry.innerHTML = '<span class="j-time">'+esc(nowTime())+'</span><span class="j-icon">'+icon+'</span><span class="j-msg">'+esc(msg)+'</span>';
-  body.appendChild(entry);
-  body.scrollTop = body.scrollHeight;
-  while(body.children.length > DEBUG_MAX) body.removeChild(body.firstChild);
+  const body = document.getElementById('journal-body'); if(!body) return;
+  const entry = document.createElement('div'); entry.className = 'j-entry ' + (level||'info');
+  entry.innerHTML = '<span class="j-time">'+esc(nowTime())+'</span><span class="j-msg">'+esc(msg)+'</span>';
+  body.appendChild(entry); body.scrollTop = body.scrollHeight;
 }
 
-let debugCount=0,debugEntries=[],debugCollapsed=false;
-function debugLog(level,cat,msg,data){
+function debugLog(level,cat,msg){
   const body=document.getElementById('tech-body');if(!body)return;
-  const time=nowTime();
   const entry=document.createElement('div');entry.className='debug-entry '+level;
-  let html='<span class="debug-time">'+time+'</span><span class="debug-cat">['+esc(cat)+']</span><span class="debug-msg">'+esc(msg)+'</span>';
-  if(data!==undefined&&data!==null){
-    let ds=typeof data==='string'?data:(JSON.stringify(data,null,2)||String(data));
-    if(ds.length>1500)ds=ds.slice(0,1500)+'…';
-    html+='<pre style="margin-top:.3rem;padding:.4rem;background:#0a0a12;border:1px solid var(--border);font-size:.62rem;color:#a8d8b0;max-height:120px;overflow:auto;white-space:pre-wrap">'+esc(ds)+'</pre>';
-  }
-  entry.innerHTML=html;body.appendChild(entry);
-  debugEntries.push({time,level,cat,msg});
-  while(body.children.length>DEBUG_MAX)body.removeChild(body.firstChild);
-  body.scrollTop=body.scrollHeight;
-  document.getElementById('debug-count').textContent=++debugCount;
-}
-
-function toggleDebug(){
-  debugCollapsed=!debugCollapsed;
-  document.getElementById('debug-panel').classList.toggle('collapsed',debugCollapsed);
-  document.getElementById('debug-collapse-btn').textContent=debugCollapsed?'+':'−';
+  entry.innerHTML='<span class="debug-time">'+nowTime()+'</span><span class="debug-cat">['+esc(cat)+']</span><span class="debug-msg">'+esc(msg)+'</span>';
+  body.appendChild(entry); body.scrollTop=body.scrollHeight;
 }
 
 function switchTab(tab){
-  const j=document.getElementById('journal-body'), t=document.getElementById('tech-body');
-  const tj=document.getElementById('tab-journal'), tt=document.getElementById('tab-tech');
+  const j=document.getElementById('journal-body'), t=document.getElementById('tech-body'), tj=document.getElementById('tab-journal'), tt=document.getElementById('tab-tech');
   if(tab==='journal'){j.classList.remove('hidden');t.classList.add('hidden');tj.classList.add('active');tt.classList.remove('active')}
   else{t.classList.remove('hidden');j.classList.add('hidden');tt.classList.add('active');tj.classList.remove('active')}
 }
 
-// ══════════════════════════════════════════════════════════════════
-// MULTI-CLÉS API
-// ══════════════════════════════════════════════════════════════════
 function loadKeys(){
-  try{
-    const raw=localStorage.getItem(API_KEYS_STORAGE);
-    if(raw){
-      state.keys=JSON.parse(raw);
-      if(!Array.isArray(state.keys))state.keys=[];
-    }
-  }catch(e){state.keys=[]}
+  try{ const raw=localStorage.getItem(API_KEYS_STORAGE); if(raw) state.keys=JSON.parse(raw)||[]; }catch(e){state.keys=[]}
 }
 function saveKeys(){
-  const input=document.getElementById('api-keys-input');
-  const raw=input.value.split('\n').map(k=>k.trim()).filter(k=>k.length>0);
-  state.keys=raw;
-  try{localStorage.setItem(API_KEYS_STORAGE,JSON.stringify(state.keys))}catch(e){}
-  updateApiPanel();
-  showToast(state.keys.length+' clé(s) enregistrée(s)','success');
+  const raw=document.getElementById('api-keys-input').value.split('\n').map(k=>k.trim()).filter(k=>k.length>0);
+  state.keys=raw; try{localStorage.setItem(API_KEYS_STORAGE,JSON.stringify(raw))}catch(e){}
+  updateApiPanel(); showToast(state.keys.length+' clé(s) enregistrée(s)','success');
 }
-function getCurrentKey(){
-  if(state.keys.length===0)return '';
-  if(state.currentKeyIndex>=state.keys.length)state.currentKeyIndex=0;
-  return state.keys[state.currentKeyIndex];
-}
-function rotateKey(){
-  if(state.keys.length<=1)return;
-  state.currentKeyIndex=(state.currentKeyIndex+1)%state.keys.length;
-  debugLog('info','CLÉ','Rotation vers la clé n°'+(state.currentKeyIndex+1));
-}
+function getCurrentKey(){ return state.keys.length ? state.keys[state.currentKeyIndex%state.keys.length] : ''; }
+function rotateKey(){ if(state.keys.length>1) state.currentKeyIndex=(state.currentKeyIndex+1)%state.keys.length; }
 function updateApiPanel(){
-  const panel=document.getElementById('api-panel');
-  const line=document.getElementById('api-status-line');
-  const text=document.getElementById('api-status-text');
-  const input=document.getElementById('api-keys-input');
-  if(state.keys.length>0){
-    panel.classList.add('ok');line.classList.add('ok');
-    text.textContent=state.keys.length+' clé(s) active(s) · Clé actuelle : '+getCurrentKey().slice(0,8)+'…';
-    input.value=state.keys.join('\n');
-  } else {
-    panel.classList.remove('ok');line.classList.remove('ok');
-    text.textContent='Aucune clé API enregistrée';
-    input.value='';
-  }
+  const txt=document.getElementById('api-status-text');
+  if(state.keys.length>0){ txt.textContent=state.keys.length+' clé(s) · Clé actuelle : '+getCurrentKey().slice(0,8)+'…'; txt.style.color='var(--ok)'; }
+  else { txt.textContent='Aucune clé API'; txt.style.color='var(--dim)'; }
   updateLaunchBtn();
 }
 
-// ══════════════════════════════════════════════════════════════════
-// UPLOAD
-// ══════════════════════════════════════════════════════════════════
-function fileToBase64(file){
-  return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file)});
-}
+function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file)})}
 async function compressImage(b64,maxSide){
   return new Promise(resolve=>{
-    const img=new Image();
-    img.onload=()=>{
-      let w=img.width,h=img.height;
-      const scale=Math.min(1,maxSide/Math.max(w,h));
-      w=Math.round(w*scale);h=Math.round(h*scale);
-      const c=document.createElement('canvas');c.width=w;c.height=h;
-      c.getContext('2d').drawImage(img,0,0,w,h);
-      resolve(c.toDataURL('image/jpeg',0.88));
-    };
-    img.onerror=()=>resolve(b64);img.src=b64;
+    const img=new Image(); img.onload=()=>{
+      let w=img.width,h=img.height; const s=Math.min(1,maxSide/Math.max(w,h));
+      w=Math.round(w*s);h=Math.round(h*s); const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h); resolve(c.toDataURL('image/jpeg',0.88));
+    }; img.onerror=()=>resolve(b64); img.src=b64;
   });
 }
 async function handleFile(file,type){
-  if(!file||!file.type.startsWith('image/')){showToast('Fichier non-image','error');return}
-  const raw=await fileToBase64(file);
-  const compressed=await compressImage(raw,type==='visage'?1000:1600);
-  if(type==='planche')state.plancheBase64=compressed;
-  else state.visageBase64=compressed;
-  renderUpload(type,compressed);
-  updateLaunchBtn();
+  if(!file||!file.type.startsWith('image/'))return;
+  const raw=await fileToBase64(file); const comp=await compressImage(raw,type==='visage'?1000:1600);
+  if(type==='planche')state.plancheBase64=comp; else state.visageBase64=comp;
+  renderUpload(type,comp); updateLaunchBtn();
 }
 function renderUpload(type,base64){
-  const zone=document.getElementById('zone-'+type);
-  if(!zone)return;
-  zone.classList.add('has-image');
+  const zone=document.getElementById('zone-'+type); zone.classList.add('has-image');
   zone.innerHTML='<img src="'+base64+'"><button class="remove-btn" data-remove="'+type+'">✕</button>';
-  zone.querySelector('[data-remove]').onclick=(e)=>{
-    e.stopPropagation();
-    if(type==='planche')state.plancheBase64=null;else state.visageBase64=null;
-    resetUpload(type);updateLaunchBtn();
-  };
+  zone.querySelector('[data-remove]').onclick=e=>{e.stopPropagation();if(type==='planche')state.plancheBase64=null;else state.visageBase64=null;resetUpload(type);updateLaunchBtn()};
 }
 function resetUpload(type){
-  const zone=document.getElementById('zone-'+type);
-  if(!zone)return;
-  zone.classList.remove('has-image');
+  const zone=document.getElementById('zone-'+type); zone.classList.remove('has-image');
   const isP=type==='planche';
-  zone.innerHTML='<input type="file" accept="image/*" id="file-'+type+'"><div class="up-icon">'+(isP?'🖼️':'👤')+'</div><div class="up-text"><strong>'+(isP?'PLANCHE BD ORIGINALE':'TON VISAGE')+'</strong>'+(isP?'Ta planche de BD complète':'Portrait face caméra')+'</div>';
+  zone.innerHTML='<input type="file" accept="image/*" id="file-'+type+'"><div class="up-icon">'+(isP?'🖼️':'👤')+'</div><div class="up-text"><strong>'+(isP?'PLANCHE BD':'TON VISAGE')+'</strong></div>';
   bindUpload(type);
 }
-function bindUpload(type){
-  document.getElementById('file-'+type).onchange=e=>{const f=e.target.files[0];if(f)handleFile(f,type)};
-}
+function bindUpload(type){ document.getElementById('file-'+type).onchange=e=>{const f=e.target.files[0];if(f)handleFile(f,type)}; }
+
 function updateLaunchBtn(){
-  const hasKey=state.keys.length>0;
-  const hasImgs=!!state.plancheBase64&&!!state.visageBase64;
-  const btn=document.getElementById('launch-btn');
-  btn.disabled=!hasKey||!hasImgs||state.isRunning;
-  if(state.isRunning)btn.innerHTML='⏳ Génération en cours…';
-  else if(!hasKey)btn.innerHTML='🔑 Ajoutez une clé API';
-  else if(!hasImgs)btn.innerHTML='🖼️ Chargez les 2 photos';
-  else btn.innerHTML='🎬 GÉNÉRER LA BD ANIMÉE<span style="display:block;font-size:.65rem;color:var(--dim);margin-top:.4rem;font-weight:400;text-transform:none">'+state.nbCases+' cases</span>';
+  const hasKey=state.keys.length>0, hasImgs=!!state.plancheBase64&&!!state.visageBase64;
+  const btn=document.getElementById('launch-btn'); btn.disabled=!hasKey||!hasImgs||state.isRunning;
+  if(state.isRunning)btn.textContent='⏳ En cours…';
+  else btn.textContent='🎬 GÉNÉRER LA BD ANIMÉE';
 }
 
-// ══════════════════════════════════════════════════════════════════
-// API FETCH (Avec rotation de clés)
-// ══════════════════════════════════════════════════════════════════
+// FETCH AVEC MULTI-CLÉS ET RELANCE
 async function apiFetch(url,options,label,maxAttempts){
-  maxAttempts=maxAttempts||12;
-  let lastErr=null;
+  maxAttempts=maxAttempts||5; let lastErr=null;
   for(let attempt=0;attempt<maxAttempts;attempt++){
-    if(state.stopRequested)throw new Error('Arrêt demandé');
+    if(state.stopRequested)throw new Error('Arrêt');
     const key=getCurrentKey();
     try{
-      const headers=Object.assign({},options.headers||{},{'Authorization':'Bearer '+key});
-      debugLog('api','REQ '+label,'Clé '+(state.currentKeyIndex+1)+'… (essai '+(attempt+1)+')');
-      const res=await fetch(url,Object.assign({},options,{headers}));
+      debugLog('api','REQ '+label,'Essai '+(attempt+1)+' (Clé '+key.slice(-4)+')');
+      const res=await fetch(url,Object.assign({},options,{headers:Object.assign({},options.headers||{},{'Authorization':'Bearer '+key})}));
       debugLog('response','RÉP '+label,'HTTP '+res.status);
       if(res.ok)return res;
-      if([400,401,403,404].includes(res.status)) throw new Error('HTTP '+res.status);
+      if(res.status===401||res.status===403||res.status===400) throw new Error('Auth/Format');
       
-      if(res.status===429 || res.status===503){
-        // Rotation de clé si on en a plusieurs
-        if(state.keys.length>1){
-          rotateKey();
-          debugLog('warn','SERVICE','HTTP '+res.status+' → Rotation de clé');
-          await sleep(2000);continue;
-        } else {
-          const wait=Math.min(150,15+attempt*15);
-          debugLog('warn','SERVICE','HTTP '+res.status+' → attente '+wait+'s');
-          setStatus('Serveur surchargé — attente '+wait+'s');
-          await sleep(wait*1000);continue;
-        }
+      if(res.status===429||res.status===503){
+        if(state.keys.length>1){ rotateKey(); debugLog('warn','SERVICE','Rotation clé → '+getCurrentKey().slice(-4)); await sleep(2000); continue; }
+        const wait = attempt===0? 15 : 30;
+        debugLog('warn','SERVICE','Attente '+wait+'s');
+        setStatus('Serveur surchargé — attente '+wait+'s'); await sleep(wait*1000); continue;
       }
       await sleep(5000);
     }catch(e){
-      if(e.message==='Arrêt demandé')throw e;
-      if(/^HTTP (4\d\d)/.test(e.message))throw e;
-      lastErr=e;
-      await sleep(5000);
+      debugLog('error','NETWORK',e.message);
+      lastErr=e; await sleep(5000);
     }
   }
-  throw lastErr||new Error('Échec '+label);
+  throw lastErr||new Error('Échec');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// GÉNÉRATION IMAGE / VIDÉO
-// ══════════════════════════════════════════════════════════════════
-async function generateCaseImage(caseData, index, total){
-  const styles={
-    'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors',
-    'realiste':'realistic comic book style, painterly rendering, dramatic lighting, rich colors',
-    'cartoon':'colorful cartoon style, bold thick outlines, simple shapes, vibrant flat colors',
-    'manga':'black and white japanese manga style, screentones, dynamic ink lines',
-    'aquarelle':'soft watercolor illustration style, gentle bleeding edges, paper texture',
-    'encre':'black ink illustration style, high contrast, white paper background'
-  };
-  const s=styles[state.selectedStyle]||styles['franco-belge'];
-  const d=caseData.dialogue?'Dialogue (French, in speech bubble): « '+caseData.dialogue+' »':'Silent panel.';
+// GÉNÉRATION
+async function generateCaseImage(caseData, index){
+  const styles={'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors','realiste':'realistic comic book style, painterly rendering','cartoon':'colorful cartoon style','manga':'black and white japanese manga','aquarelle':'soft watercolor illustration','encre':'black ink illustration'};
+  const s=styles[state.selectedStyle];
   const prompt=[
-    'COMIC BOOK PANEL, vertical 9:16.',
-    'STYLE: '+s,
-    'SCENE: '+caseData.desc,
-    d,
-    'CHARACTER (match reference face EXACTLY): middle-aged man, bald, thin round glasses, short stubble, black jacket.',
-    'SETTING: precision machine workshop, yellow fluorescent lighting.',
-    'No text outside bubble. No watermarks.'
+    'CREATE ONE COMIC BOOK PANEL in the following style:', s, '',
+    'Scene: '+caseData.desc, caseData.dialogue?'Dialogue: « '+caseData.dialogue+' »':'Silent panel.', '',
+    'CHARACTER (match reference EXACTLY): middle-aged man, bald, thin round glasses, short stubble, black jacket with yellow logo.', '',
+    'SETTING: precision machine workshop, yellow fluorescent lighting.', '',
+    'RULES: One panel only. Speech bubble at bottom. No text outside. No watermarks.'
   ].join('\n');
 
-  const body={
-    model:MODEL_IMAGE, prompt, n:1, size:'1K', ratio:'9:16',
-    extra_body:{image:[state.visageBase64],response_format:'url'}
-  };
+  const body={model:MODEL_IMAGE, prompt, n:1, size:'1K', ratio:'4:3', extra_body:{image:[state.visageBase64],response_format:'url'}};
   const res=await apiFetch(API_BASE+'/images/generations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Image '+index);
   const data=await res.json();
   return data.data[0].url||('data:image/png;base64,'+data.data[0].b64_json);
 }
 
-async function createVideoTask(prompt,imageUrl,duration){
-  const body={model:MODEL_VIDEO, prompt, image:imageUrl, num_frames:duration, frame_rate:FRAME_RATE};
+async function createVideoTask(prompt,imageUrl){
+  const body={model:MODEL_VIDEO, prompt, image:imageUrl, num_frames:state.durVideo, frame_rate:FRAME_RATE};
   const res=await apiFetch(API_BASE+'/videos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Vidéo');
-  const data=await res.json();
-  return data.video_id||data.id||data.task_id;
+  const data=await res.json(); return data.video_id||data.id||data.task_id;
 }
 
-async function pollVideo(videoId,onProgress){
-  let rem=60;
-  while(rem>0){if(state.stopRequested)throw new Error('Arrêt');onProgress('Préparation '+rem+'s');await sleep(1000);rem--}
-  for(let attempt=0;attempt<100;attempt++){
+async function pollVideo(videoId){
+  let rem=60; while(rem>0){if(state.stopRequested)throw new Error('Arrêt');setStatus('Prépa '+rem+'s');await sleep(1000);rem--}
+  for(let a=0;a<100;a++){
     if(state.stopRequested)throw new Error('Arrêt');
-    if(attempt>0){let r=10;while(r>0){if(state.stopRequested)throw new Error('Arrêt');onProgress('Création '+r+'s');await sleep(1000);r--}}
+    if(a>0){let r=10;while(r>0){if(state.stopRequested)throw new Error('Arrêt');setStatus('Création '+r+'s');await sleep(1000);r--}}
     const url=POLL_BASE+'?video_id='+encodeURIComponent(videoId)+'&model_name='+encodeURIComponent(MODEL_VIDEO);
-    const res=await apiFetch(url,{method:'GET'},'Polling');
-    const d=await res.json();
-    onProgress(d.progress+'%');
-    if(d.status==='completed'||d.status==='succeeded'||d.status==='done'){
-      return (d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
-    }
-    if(d.status==='failed')throw new Error('Échec vidéo');
+    const res=await apiFetch(url,{method:'GET'},'Polling'); const d=await res.json();
+    if(d.status==='completed'||d.status==='succeeded'||d.status==='done') return (d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
+    if(d.status==='failed')throw new Error('Échec');
   }
   throw new Error('Timeout');
 }
 
-// ══════════════════════════════════════════════════════════════════
 // UI & PIPELINE
-// ══════════════════════════════════════════════════════════════════
 function renderCases(){
-  const grid=document.getElementById('cases-grid');
+  const grid=document.getElementById('cases-grid'); if(!grid)return;
   grid.innerHTML=state.cases.map((c,i)=>{
     let body='', cls='generating';
     if(c.status==='pending')body='<div class="case-placeholder">En attente…</div>';
     else if(c.status==='loading-img')body='<div class="case-placeholder"><div class="spinner-mini"></div>Image…</div>';
     else if(c.status==='done-img'){body='<img src="'+c.imageUrl+'">';cls='done'}
-    else if(c.status==='loading-vid')body='<img src="'+c.imageUrl+'" style="opacity:.5"><div class="case-placeholder" style="position:absolute;inset:0;background:transparent"><div class="spinner-mini"></div><span>'+esc(c.progress||'')+'</span></div>';
+    else if(c.status==='loading-vid')body='<img src="'+c.imageUrl+'" style="opacity:.5"><div class="case-placeholder" style="position:absolute;inset:0;background:transparent"><div class="spinner-mini"></div></div>';
     else if(c.status==='done-vid'){body='<video src="'+c.videoUrl+'" controls playsinline></video>';cls='done'}
     else if(c.status==='error'){body='<div class="case-placeholder" style="color:var(--err)">Erreur</div>';cls='error'}
     return '<div class="case-card '+cls+'"><div class="case-card-header"><span class="case-num">Case '+(i+1)+'</span></div><div class="case-card-body">'+body+'</div></div>';
   }).join('');
 }
 
-async function startPipeline(){
-  if(state.isRunning)return;
-  state.isRunning=true;
-  state.stopRequested=false;
-  const script=document.getElementById('script-input').value;
+async function startImages(){
+  if(state.isRunning)return; state.isRunning=true; state.stopRequested=false;
+  document.getElementById('launch-btn').disabled=true; document.getElementById('stop-btn').classList.add('visible'); document.getElementById('cases-container').style.display='block';
   
-  // Parser simple
-  const parsed=[];let cur=null,dlg='';
-  for(let l of script.split('\n')){
-    l=l.trim();if(!l)continue;
-    let m=l.match(/^Case\s+(\d+)\s*[—\-–:]\s*(.+)$/i);
+  const parsed=[]; let cur=null, dlg=''; const raw=document.getElementById('script-input').value;
+  for(let l of raw.split('\n')){
+    l=l.trim(); if(!l)continue; let m=l.match(/^Case\s+(\d+)\s*[—\-–:]\s*(.+)$/i);
     if(m){if(cur){cur.dialogue=dlg;parsed.push(cur)}cur={desc:m[2],dialogue:''};dlg='';continue}
-    m=l.match(/^Dialogue\s*:\s*(.+)$/i);if(m){dlg=m[1];continue}
-    if(cur&&!dlg)cur.desc+=' '+l;else if(cur)dlg+=' '+l;
+    m=l.match(/^Dialogue\s*:\s*(.+)$/i); if(m){dlg=m[1];continue}
+    if(cur&&!dlg)cur.desc+=' '+l; else if(cur)dlg+=' '+l;
   }
   if(cur){cur.dialogue=dlg;parsed.push(cur)}
   
-  state.cases=parsed.slice(0,state.nbCases).map(c=>({...c,status:'pending',imageUrl:null,videoUrl:null}));
-  document.getElementById('cases-container').style.display='block';
-  document.getElementById('launch-videos-btn').classList.add('hidden');
-  document.getElementById('launch-btn').disabled=true;
-  document.getElementById('stop-btn').classList.add('visible');
+  state.cases=parsed.slice(0,state.nbCases).map(c=>({...c,status:'pending'}));
   renderCases();
 
-  try{
-    // 1. IMAGES
-    setStatus('Génération des images…');
-    for(let i=0;i<state.cases.length;i++){
-      if(state.stopRequested)break;
-      state.cases[i].status='loading-img';renderCases();
-      try{
-        state.cases[i].imageUrl=await generateCaseImage(state.cases[i],i+1,state.cases.length);
-        state.cases[i].status='done-img';
-      }catch(e){state.cases[i].status='error'}
-      renderCases();
-    }
-    
-    // 2. VIDÉOS (Auto si mode complet)
-    const mode=document.getElementById('mode-select').value;
-    if(mode!=='images'&&!state.stopRequested){
-      document.getElementById('launch-videos-btn').classList.remove('hidden');
-      await runVideosOnly();
-    }
-  }catch(e){}
-  
-  state.isRunning=false;
-  document.getElementById('stop-btn').classList.remove('visible');
-  updateLaunchBtn();
+  for(let i=0;i<state.cases.length;i++){
+    if(state.stopRequested)break;
+    state.cases[i].status='loading-img'; renderCases();
+    try{
+      state.cases[i].imageUrl=await generateCaseImage(state.cases[i],i+1);
+      state.cases[i].status='done-img';
+    }catch(e){ state.cases[i].status='error'; }
+    renderCases(); await sleep(3000);
+  }
+  state.isRunning=false; document.getElementById('stop-btn').classList.remove('visible'); updateLaunchBtn();
+  document.getElementById('launch-videos-btn').classList.remove('hidden');
 }
 
-async function runVideosOnly(){
-  state.isRunning=true;
-  document.getElementById('launch-videos-btn').disabled=true;
-  setStatus('Génération des vidéos…');
+async function startVideos(){
+  if(state.isRunning)return; state.isRunning=true; state.stopRequested=false;
+  document.getElementById('launch-videos-btn').disabled=true; document.getElementById('stop-btn').classList.add('visible');
   
   for(let i=0;i<state.cases.length;i++){
-    const c=state.cases[i];
-    if(!c.imageUrl||c.status==='done-vid'||state.stopRequested)continue;
-    
-    c.status='loading-vid';renderCases();
+    const c=state.cases[i]; if(!c.imageUrl||c.status==='done-vid'||state.stopRequested)continue;
+    c.status='loading-vid'; renderCases();
     try{
-      const vid=await createVideoTask('Animate this comic panel subtly. Character identical.',c.imageUrl,state.durVideo);
-      c.videoUrl=await pollVideo(vid,p=>{c.progress=p;renderCases()});
-      c.status='done-vid';
-    }catch(e){c.status='error';}
-    renderCases();
-    if(i<state.cases.length-1&&!state.stopRequested)await sleep(5000);
+      const vid=await createVideoTask('Animate this panel subtly. Character identical.',c.imageUrl);
+      c.videoUrl=await pollVideo(vid); c.status='done-vid';
+    }catch(e){ c.status='error'; }
+    renderCases(); if(i<state.cases.length-1)await sleep(5000);
   }
-  
-  document.getElementById('launch-videos-btn').disabled=false;
-  state.isRunning=false;
+  state.isRunning=false; document.getElementById('stop-btn').classList.remove('visible'); document.getElementById('launch-videos-btn').disabled=false;
 }
 
-// ══════════════════════════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════════════════════
-loadKeys();
-document.getElementById('api-keys-input').addEventListener('change',saveKeys);
-document.getElementById('api-keys-input').addEventListener('blur',saveKeys);
-bindUpload('planche');bindUpload('visage');
-document.getElementById('launch-btn').onclick=startPipeline;
-document.getElementById('launch-videos-btn').onclick=runVideosOnly;
+loadKeys(); document.getElementById('api-keys-input').addEventListener('change',saveKeys);
+bindUpload('planche'); bindUpload('visage');
+document.getElementById('launch-btn').onclick=startImages;
+document.getElementById('launch-videos-btn').onclick=startVideos;
 document.getElementById('stop-btn').onclick=()=>{state.stopRequested=true;setStatus('Arrêt…')};
-document.getElementById('debug-header').onclick=e=>{if(e.target.tagName!=='BUTTON')toggleDebug()};
-document.getElementById('debug-collapse-btn').onclick=e=>{e.stopPropagation();toggleDebug()};
-document.getElementById('debug-clear-btn').onclick=e=>{e.stopPropagation();document.getElementById('tech-body').innerHTML='';document.getElementById('journal-body').innerHTML=''};
-document.getElementById('tab-journal').onclick=()=>switchTab('journal');
-document.getElementById('tab-tech').onclick=()=>switchTab('tech');
-document.querySelectorAll('.preset').forEach(p=>p.onclick=()=>{
-  document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));
-  p.classList.add('active');state.selectedStyle=p.dataset.style;
-});
+document.getElementById('debug-collapse-btn').onclick=()=>{const p=document.getElementById('debug-panel');p.classList.toggle('collapsed');};
+document.getElementById('debug-clear-btn').onclick=()=>{document.getElementById('tech-body').innerHTML='';document.getElementById('journal-body').innerHTML=''};
+document.getElementById('tab-journal').onclick=()=>switchTab('journal'); document.getElementById('tab-tech').onclick=()=>switchTab('tech');
+document.querySelectorAll('.preset').forEach(p=>p.onclick=()=>{document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));p.classList.add('active');state.selectedStyle=p.dataset.style;});
 document.getElementById('nb-cases').onchange=e=>{state.nbCases=parseInt(e.target.value);updateLaunchBtn()};
 updateApiPanel();
 </script>
