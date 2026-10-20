@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0a0a12">
 <link rel="manifest" href="manifest.json">
-<title>BD Animée Pro</title>
+<title>BD Animée Pro — Multi-API</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 :root{
@@ -125,8 +125,8 @@ textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(22
 <body>
 <header>
 <h1>BD Animée Pro</h1>
-<p class="subtitle">Planche + Visage → BD complète → Animation → Film</p>
-<p class="version-tag">v3.0 · Retour au format 4:3</p>
+<p class="subtitle">Multi-API · Agnes + Pollinations</p>
+<p class="version-tag">v4.0 · Secours Automatique</p>
 </header>
 
 <div class="panel" id="api-panel">
@@ -243,6 +243,7 @@ const MODEL_IMAGE = 'agnes-image-2.1-flash';
 const MODEL_VIDEO = 'agnes-video-v2.0';
 const FRAME_RATE = 24;
 const API_KEYS_STORAGE = 'bd_animee_pro_api_keys';
+const POLLINATIONS_BASE = 'https://image.pollinations.ai/prompt';
 
 const state = { keys: [], currentKeyIndex: 0, plancheBase64: null, visageBase64: null, selectedStyle: 'franco-belge', nbCases: 6, durVideo: 145, cases: [], isRunning: false, stopRequested: false };
 
@@ -332,7 +333,9 @@ function updateLaunchBtn(){
   else btn.textContent='🎬 GÉNÉRER LA BD ANIMÉE';
 }
 
-// FETCH AVEC MULTI-CLÉS ET RELANCE
+// ══════════════════════════════════════════════════════════════════
+// API FETCH AGNES (avec rotation)
+// ══════════════════════════════════════════════════════════════════
 async function apiFetch(url,options,label,maxAttempts){
   maxAttempts=maxAttempts||5; let lastErr=null;
   for(let attempt=0;attempt<maxAttempts;attempt++){
@@ -349,7 +352,7 @@ async function apiFetch(url,options,label,maxAttempts){
         if(state.keys.length>1){ rotateKey(); debugLog('warn','SERVICE','Rotation clé → '+getCurrentKey().slice(-4)); await sleep(2000); continue; }
         const wait = attempt===0? 15 : 30;
         debugLog('warn','SERVICE','Attente '+wait+'s');
-        setStatus('Serveur surchargé — attente '+wait+'s'); await sleep(wait*1000); continue;
+        setStatus('Agnes surchargé — attente '+wait+'s'); await sleep(wait*1000); continue;
       }
       await sleep(5000);
     }catch(e){
@@ -360,11 +363,13 @@ async function apiFetch(url,options,label,maxAttempts){
   throw lastErr||new Error('Échec');
 }
 
-// GÉNÉRATION
+// ══════════════════════════════════════════════════════════════════
+// GÉNÉRATION IMAGE (Agnes + Fallback Pollinations)
+// ══════════════════════════════════════════════════════════════════
 async function generateCaseImage(caseData, index){
   const styles={'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors','realiste':'realistic comic book style, painterly rendering','cartoon':'colorful cartoon style','manga':'black and white japanese manga','aquarelle':'soft watercolor illustration','encre':'black ink illustration'};
   const s=styles[state.selectedStyle];
-  const prompt=[
+  const promptText=[
     'CREATE ONE COMIC BOOK PANEL in the following style:', s, '',
     'Scene: '+caseData.desc, caseData.dialogue?'Dialogue: « '+caseData.dialogue+' »':'Silent panel.', '',
     'CHARACTER (match reference EXACTLY): middle-aged man, bald, thin round glasses, short stubble, black jacket with yellow logo.', '',
@@ -372,12 +377,40 @@ async function generateCaseImage(caseData, index){
     'RULES: One panel only. Speech bubble at bottom. No text outside. No watermarks.'
   ].join('\n');
 
-  const body={model:MODEL_IMAGE, prompt, n:1, size:'1K', ratio:'4:3', extra_body:{image:[state.visageBase64],response_format:'url'}};
-  const res=await apiFetch(API_BASE+'/images/generations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Image '+index);
-  const data=await res.json();
-  return data.data[0].url||('data:image/png;base64,'+data.data[0].b64_json);
+  // 1. Essayer avec Agnes
+  try{
+    debugLog('info','IMAGE '+index,'Tentative avec Agnes…');
+    const body={model:MODEL_IMAGE, prompt:promptText, n:1, size:'1K', ratio:'4:3', extra_body:{image:[state.visageBase64],response_format:'url'}};
+    const res=await apiFetch(API_BASE+'/images/generations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Image '+index);
+    const data=await res.json();
+    debugLog('success','IMAGE '+index,'Succès avec Agnes');
+    return data.data[0].url||('data:image/png;base64,'+data.data[0].b64_json);
+  }catch(e){
+    debugLog('warn','IMAGE '+index,'Agnes a échoué → Bascule sur Pollinations.ai');
+    setStatus('Agnes surchargé → Utilisation de Pollinations.ai…');
+  }
+
+  // 2. Fallback : Pollinations.ai (Gratuit, sans clé, très fiable)
+  try{
+    const encodedPrompt=encodeURIComponent(promptText + ' \n IMPORTANT: The character must have the face of the reference image. Bald head, round glasses, short stubble beard, black technical jacket.');
+    const url=`https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=768&model=flux&nologo=true&seed=${Math.floor(Math.random()*100000)}`;
+    debugLog('api','REQ Pollinations','GET '+url.slice(0,80)+'…');
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('Pollinations HTTP '+res.status);
+    const blob=await res.blob();
+    const reader=new FileReader();
+    const base64=await new Promise(r=>{reader.onload=()=>r(reader.result);reader.readAsDataURL(blob)});
+    debugLog('success','IMAGE '+index,'Succès avec Pollinations.ai');
+    return base64;
+  }catch(e){
+    debugLog('error','IMAGE '+index,'Pollinations a aussi échoué : '+e.message);
+    throw new Error('Tous les moteurs ont échoué');
+  }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// GÉNÉRATION VIDÉO (Agnes uniquement pour l'instant)
+// ══════════════════════════════════════════════════════════════════
 async function createVideoTask(prompt,imageUrl){
   const body={model:MODEL_VIDEO, prompt, image:imageUrl, num_frames:state.durVideo, frame_rate:FRAME_RATE};
   const res=await apiFetch(API_BASE+'/videos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Vidéo');
@@ -397,7 +430,9 @@ async function pollVideo(videoId){
   throw new Error('Timeout');
 }
 
+// ══════════════════════════════════════════════════════════════════
 // UI & PIPELINE
+// ══════════════════════════════════════════════════════════════════
 function renderCases(){
   const grid=document.getElementById('cases-grid'); if(!grid)return;
   grid.innerHTML=state.cases.map((c,i)=>{
