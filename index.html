@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0a0a12">
 <link rel="manifest" href="manifest.json">
-<title>BD Animée Pro — Multi-API</title>
+<title>BD Animée Pro</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 :root{
@@ -15,7 +15,7 @@
 --panel:#16161f;--border:#2a2a3a;
 --ink:#e8e6e0;--dim:#8a8896;--faint:#4a4858;
 --acc:#e5c15a;--acc2:#e87b35;--acc3:#8b5fc4;
---ok:#4a9d6a;--err:#c85a4a;--warn:#d4a017;
+--ok:#4a9d6a;--err:#c85a4a;--warn:#d4a017;--blue:#4a7bc8;
 --r:8px;--fs:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
 --fm:ui-monospace,'SF Mono',Menlo,monospace;
 --safe-top:env(safe-area-inset-top,0px);
@@ -40,7 +40,12 @@ textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(22
 .btn:hover:not(:disabled){background:var(--bg3);border-color:var(--acc)}
 .btn:active:not(:disabled){transform:scale(.98)}
 .btn:disabled{opacity:.35;cursor:not-allowed}
-.btn-primary{border-color:var(--acc);background:linear-gradient(135deg,rgba(232,123,53,.22),rgba(229,193,90,.16));color:var(--acc);font-size:1rem;padding:1.25rem;letter-spacing:.18em}
+
+/* Bouton Jaune (Images) */
+.btn-images{border-color:var(--acc);background:linear-gradient(135deg,rgba(232,123,53,.22),rgba(229,193,90,.16));color:var(--acc);font-size:1rem;padding:1.25rem;letter-spacing:.15em}
+/* Bouton Bleu (Vidéos) */
+.btn-videos{border-color:var(--blue);background:linear-gradient(135deg,rgba(74,123,200,.22),rgba(74,157,106,.16));color:#6a9be0;font-size:1rem;padding:1.25rem;letter-spacing:.15em}
+
 .btn-stop{border-color:var(--err);color:var(--err);background:transparent;display:none}
 .btn-stop.visible{display:block}
 .btn-small{width:auto;padding:.5rem .85rem;font-size:.7rem;margin-bottom:0;display:inline-block}
@@ -125,8 +130,8 @@ textarea:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(22
 <body>
 <header>
 <h1>BD Animée Pro</h1>
-<p class="subtitle">Multi-API · Agnes + Pollinations</p>
-<p class="version-tag">v4.0 · Secours Automatique</p>
+<p class="subtitle">Génération par étapes · Images puis Vidéos</p>
+<p class="version-tag">v5.1 · Contrôle Total</p>
 </header>
 
 <div class="panel" id="api-panel">
@@ -206,14 +211,19 @@ Case 6 — Le check : Gros plan sur deux poings qui se touchent, étincelles en 
 </div>
 </div>
 
-<button type="button" class="btn btn-primary" id="launch-btn" disabled>
-🎬 GÉNÉRER LA BD ANIMÉE
+<!-- BOUTONS D'ACTION -->
+<button type="button" class="btn btn-images" id="btn-gen-images" disabled>
+🎨 1. GÉNÉRER LES CASES (Images)
 </button>
-<button type="button" class="btn btn-primary hidden" id="launch-videos-btn" style="background:linear-gradient(135deg,rgba(74,123,200,.2),rgba(74,157,106,.15));color:#6a9be0;border-color:#4a7bc8">🎬 RÉESSAYER LES VIDÉOS</button>
-<button type="button" class="btn btn-stop" id="stop-btn">⏹ Arrêter</button>
+
+<button type="button" class="btn btn-videos hidden" id="btn-gen-videos">
+🎬 2. ANIMER LA PLANCHE (Vidéos)
+</button>
+
+<button type="button" class="btn btn-stop" id="stop-btn">⏹ Arrêter la génération</button>
 
 <div id="cases-container" style="display:none">
-<h2 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem">🎨 Cases générées</h2>
+<h2 style="font-size:.85rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:.7rem">🎨 Votre Planche de BD</h2>
 <div class="cases-grid" id="cases-grid"></div>
 </div>
 
@@ -243,7 +253,6 @@ const MODEL_IMAGE = 'agnes-image-2.1-flash';
 const MODEL_VIDEO = 'agnes-video-v2.0';
 const FRAME_RATE = 24;
 const API_KEYS_STORAGE = 'bd_animee_pro_api_keys';
-const POLLINATIONS_BASE = 'https://image.pollinations.ai/prompt';
 
 const state = { keys: [], currentKeyIndex: 0, plancheBase64: null, visageBase64: null, selectedStyle: 'franco-belge', nbCases: 6, durVideo: 145, cases: [], isRunning: false, stopRequested: false };
 
@@ -294,7 +303,7 @@ function updateApiPanel(){
   const txt=document.getElementById('api-status-text');
   if(state.keys.length>0){ txt.textContent=state.keys.length+' clé(s) · Clé actuelle : '+getCurrentKey().slice(0,8)+'…'; txt.style.color='var(--ok)'; }
   else { txt.textContent='Aucune clé API'; txt.style.color='var(--dim)'; }
-  updateLaunchBtn();
+  updateUI();
 }
 
 function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file)})}
@@ -311,12 +320,12 @@ async function handleFile(file,type){
   if(!file||!file.type.startsWith('image/'))return;
   const raw=await fileToBase64(file); const comp=await compressImage(raw,type==='visage'?1000:1600);
   if(type==='planche')state.plancheBase64=comp; else state.visageBase64=comp;
-  renderUpload(type,comp); updateLaunchBtn();
+  renderUpload(type,comp); updateUI();
 }
 function renderUpload(type,base64){
   const zone=document.getElementById('zone-'+type); zone.classList.add('has-image');
   zone.innerHTML='<img src="'+base64+'"><button class="remove-btn" data-remove="'+type+'">✕</button>';
-  zone.querySelector('[data-remove]').onclick=e=>{e.stopPropagation();if(type==='planche')state.plancheBase64=null;else state.visageBase64=null;resetUpload(type);updateLaunchBtn()};
+  zone.querySelector('[data-remove]').onclick=e=>{e.stopPropagation();if(type==='planche')state.plancheBase64=null;else state.visageBase64=null;resetUpload(type);updateUI()};
 }
 function resetUpload(type){
   const zone=document.getElementById('zone-'+type); zone.classList.remove('has-image');
@@ -326,18 +335,28 @@ function resetUpload(type){
 }
 function bindUpload(type){ document.getElementById('file-'+type).onchange=e=>{const f=e.target.files[0];if(f)handleFile(f,type)}; }
 
-function updateLaunchBtn(){
+function updateUI(){
   const hasKey=state.keys.length>0, hasImgs=!!state.plancheBase64&&!!state.visageBase64;
-  const btn=document.getElementById('launch-btn'); btn.disabled=!hasKey||!hasImgs||state.isRunning;
-  if(state.isRunning)btn.textContent='⏳ En cours…';
-  else btn.textContent='🎬 GÉNÉRER LA BD ANIMÉE';
+  const btnImg=document.getElementById('btn-gen-images');
+  const btnVid=document.getElementById('btn-gen-videos');
+  
+  btnImg.disabled=!hasKey||!hasImgs||state.isRunning;
+  
+  // Si au moins une image est générée, on affiche le bouton vidéo
+  const hasGeneratedImages = state.cases.some(c => c.status === 'done-img' || c.status === 'done-vid');
+  if(hasGeneratedImages && !state.isRunning) {
+    btnVid.classList.remove('hidden');
+  } else if (!hasGeneratedImages) {
+    btnVid.classList.add('hidden');
+  }
+  btnVid.disabled = state.isRunning || !hasGeneratedImages;
 }
 
 // ══════════════════════════════════════════════════════════════════
-// API FETCH AGNES (avec rotation)
+// API FETCH AGNES (Patient)
 // ══════════════════════════════════════════════════════════════════
 async function apiFetch(url,options,label,maxAttempts){
-  maxAttempts=maxAttempts||5; let lastErr=null;
+  maxAttempts=maxAttempts||20; let lastErr=null;
   for(let attempt=0;attempt<maxAttempts;attempt++){
     if(state.stopRequested)throw new Error('Arrêt');
     const key=getCurrentKey();
@@ -350,7 +369,7 @@ async function apiFetch(url,options,label,maxAttempts){
       
       if(res.status===429||res.status===503){
         if(state.keys.length>1){ rotateKey(); debugLog('warn','SERVICE','Rotation clé → '+getCurrentKey().slice(-4)); await sleep(2000); continue; }
-        const wait = attempt===0? 15 : 30;
+        const wait = Math.min(60, 5 + attempt * 5);
         debugLog('warn','SERVICE','Attente '+wait+'s');
         setStatus('Agnes surchargé — attente '+wait+'s'); await sleep(wait*1000); continue;
       }
@@ -360,57 +379,37 @@ async function apiFetch(url,options,label,maxAttempts){
       lastErr=e; await sleep(5000);
     }
   }
-  throw lastErr||new Error('Échec');
+  throw lastErr||new Error('Échec après 20 essais');
 }
 
 // ══════════════════════════════════════════════════════════════════
-// GÉNÉRATION IMAGE (Agnes + Fallback Pollinations)
+// GÉNÉRATION IMAGE / VIDÉO
 // ══════════════════════════════════════════════════════════════════
 async function generateCaseImage(caseData, index){
   const styles={'franco-belge':'franco-belgian bande dessinée, ligne claire style, thick black outlines, flat saturated colors','realiste':'realistic comic book style, painterly rendering','cartoon':'colorful cartoon style','manga':'black and white japanese manga','aquarelle':'soft watercolor illustration','encre':'black ink illustration'};
   const s=styles[state.selectedStyle];
+  
+  let dialoguePrompt = '';
+  if(caseData.dialogue && !caseData.dialogue.toLowerCase().includes('silence') && caseData.dialogue.trim().length > 3){
+    dialoguePrompt = 'Dialogue: « '+caseData.dialogue+' »';
+  } else {
+    dialoguePrompt = 'Silent panel. NO speech bubble.';
+  }
+
   const promptText=[
     'CREATE ONE COMIC BOOK PANEL in the following style:', s, '',
-    'Scene: '+caseData.desc, caseData.dialogue?'Dialogue: « '+caseData.dialogue+' »':'Silent panel.', '',
+    'Scene: '+caseData.desc, dialoguePrompt, '',
     'CHARACTER (match reference EXACTLY): middle-aged man, bald, thin round glasses, short stubble, black jacket with yellow logo.', '',
     'SETTING: precision machine workshop, yellow fluorescent lighting.', '',
-    'RULES: One panel only. Speech bubble at bottom. No text outside. No watermarks.'
+    'RULES: One panel only. No text outside. No watermarks.'
   ].join('\n');
 
-  // 1. Essayer avec Agnes
-  try{
-    debugLog('info','IMAGE '+index,'Tentative avec Agnes…');
-    const body={model:MODEL_IMAGE, prompt:promptText, n:1, size:'1K', ratio:'4:3', extra_body:{image:[state.visageBase64],response_format:'url'}};
-    const res=await apiFetch(API_BASE+'/images/generations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Image '+index);
-    const data=await res.json();
-    debugLog('success','IMAGE '+index,'Succès avec Agnes');
-    return data.data[0].url||('data:image/png;base64,'+data.data[0].b64_json);
-  }catch(e){
-    debugLog('warn','IMAGE '+index,'Agnes a échoué → Bascule sur Pollinations.ai');
-    setStatus('Agnes surchargé → Utilisation de Pollinations.ai…');
-  }
-
-  // 2. Fallback : Pollinations.ai (Gratuit, sans clé, très fiable)
-  try{
-    const encodedPrompt=encodeURIComponent(promptText + ' \n IMPORTANT: The character must have the face of the reference image. Bald head, round glasses, short stubble beard, black technical jacket.');
-    const url=`https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=768&model=flux&nologo=true&seed=${Math.floor(Math.random()*100000)}`;
-    debugLog('api','REQ Pollinations','GET '+url.slice(0,80)+'…');
-    const res=await fetch(url);
-    if(!res.ok)throw new Error('Pollinations HTTP '+res.status);
-    const blob=await res.blob();
-    const reader=new FileReader();
-    const base64=await new Promise(r=>{reader.onload=()=>r(reader.result);reader.readAsDataURL(blob)});
-    debugLog('success','IMAGE '+index,'Succès avec Pollinations.ai');
-    return base64;
-  }catch(e){
-    debugLog('error','IMAGE '+index,'Pollinations a aussi échoué : '+e.message);
-    throw new Error('Tous les moteurs ont échoué');
-  }
+  const body={model:MODEL_IMAGE, prompt:promptText, n:1, size:'1K', ratio:'4:3', extra_body:{image:[state.visageBase64],response_format:'url'}};
+  const res=await apiFetch(API_BASE+'/images/generations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Image '+index);
+  const data=await res.json();
+  return data.data[0].url||('data:image/png;base64,'+data.data[0].b64_json);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// GÉNÉRATION VIDÉO (Agnes uniquement pour l'instant)
-// ══════════════════════════════════════════════════════════════════
 async function createVideoTask(prompt,imageUrl){
   const body={model:MODEL_VIDEO, prompt, image:imageUrl, num_frames:state.durVideo, frame_rate:FRAME_RATE};
   const res=await apiFetch(API_BASE+'/videos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},'Vidéo');
@@ -431,7 +430,7 @@ async function pollVideo(videoId){
 }
 
 // ══════════════════════════════════════════════════════════════════
-// UI & PIPELINE
+// UI RENDU
 // ══════════════════════════════════════════════════════════════════
 function renderCases(){
   const grid=document.getElementById('cases-grid'); if(!grid)return;
@@ -440,16 +439,21 @@ function renderCases(){
     if(c.status==='pending')body='<div class="case-placeholder">En attente…</div>';
     else if(c.status==='loading-img')body='<div class="case-placeholder"><div class="spinner-mini"></div>Image…</div>';
     else if(c.status==='done-img'){body='<img src="'+c.imageUrl+'">';cls='done'}
-    else if(c.status==='loading-vid')body='<img src="'+c.imageUrl+'" style="opacity:.5"><div class="case-placeholder" style="position:absolute;inset:0;background:transparent"><div class="spinner-mini"></div></div>';
+    else if(c.status==='loading-vid')body='<img src="'+c.imageUrl+'" style="opacity:.5"><div class="case-placeholder" style="position:absolute;inset:0;background:transparent"><div class="spinner-mini"></div>Vidéo…</div>';
     else if(c.status==='done-vid'){body='<video src="'+c.videoUrl+'" controls playsinline></video>';cls='done'}
     else if(c.status==='error'){body='<div class="case-placeholder" style="color:var(--err)">Erreur</div>';cls='error'}
     return '<div class="case-card '+cls+'"><div class="case-card-header"><span class="case-num">Case '+(i+1)+'</span></div><div class="case-card-body">'+body+'</div></div>';
   }).join('');
 }
 
+// ══════════════════════════════════════════════════════════════════
+// PIPELINE 1 : IMAGES
+// ══════════════════════════════════════════════════════════════════
 async function startImages(){
   if(state.isRunning)return; state.isRunning=true; state.stopRequested=false;
-  document.getElementById('launch-btn').disabled=true; document.getElementById('stop-btn').classList.add('visible'); document.getElementById('cases-container').style.display='block';
+  document.getElementById('stop-btn').classList.add('visible'); 
+  document.getElementById('cases-container').style.display='block';
+  updateUI();
   
   const parsed=[]; let cur=null, dlg=''; const raw=document.getElementById('script-input').value;
   for(let l of raw.split('\n')){
@@ -472,37 +476,55 @@ async function startImages(){
     }catch(e){ state.cases[i].status='error'; }
     renderCases(); await sleep(3000);
   }
-  state.isRunning=false; document.getElementById('stop-btn').classList.remove('visible'); updateLaunchBtn();
-  document.getElementById('launch-videos-btn').classList.remove('hidden');
+  
+  state.isRunning=false; 
+  document.getElementById('stop-btn').classList.remove('visible'); 
+  updateUI();
+  
+  if(!state.stopRequested && state.cases.some(c=>c.status==='done-img')){
+    showToast('Cases prêtes ! Vérifiez-les puis lancez l\'animation.','success', 4000);
+  }
 }
 
+// ══════════════════════════════════════════════════════════════════
+// PIPELINE 2 : VIDÉOS
+// ══════════════════════════════════════════════════════════════════
 async function startVideos(){
   if(state.isRunning)return; state.isRunning=true; state.stopRequested=false;
-  document.getElementById('launch-videos-btn').disabled=true; document.getElementById('stop-btn').classList.add('visible');
+  document.getElementById('stop-btn').classList.add('visible');
+  updateUI();
   
+  let count = 0;
   for(let i=0;i<state.cases.length;i++){
-    const c=state.cases[i]; if(!c.imageUrl||c.status==='done-vid'||state.stopRequested)continue;
+    const c=state.cases[i]; 
+    if(!c.imageUrl || c.status==='done-vid' || state.stopRequested)continue;
     c.status='loading-vid'; renderCases();
     try{
       const vid=await createVideoTask('Animate this panel subtly. Character identical.',c.imageUrl);
       c.videoUrl=await pollVideo(vid); c.status='done-vid';
+      count++;
     }catch(e){ c.status='error'; }
-    renderCases(); if(i<state.cases.length-1)await sleep(5000);
+    renderCases(); if(i<state.cases.length-1 && !state.stopRequested)await sleep(5000);
   }
-  state.isRunning=false; document.getElementById('stop-btn').classList.remove('visible'); document.getElementById('launch-videos-btn').disabled=false;
+  
+  state.isRunning=false; 
+  document.getElementById('stop-btn').classList.remove('visible'); 
+  updateUI();
+  
+  if(count > 0) showToast(count+' vidéo(s) générée(s) !','success');
 }
 
 // INIT
 loadKeys(); document.getElementById('api-keys-input').addEventListener('change',saveKeys);
 bindUpload('planche'); bindUpload('visage');
-document.getElementById('launch-btn').onclick=startImages;
-document.getElementById('launch-videos-btn').onclick=startVideos;
-document.getElementById('stop-btn').onclick=()=>{state.stopRequested=true;setStatus('Arrêt…')};
+document.getElementById('btn-gen-images').onclick=startImages;
+document.getElementById('btn-gen-videos').onclick=startVideos;
+document.getElementById('stop-btn').onclick=()=>{state.stopRequested=true;setStatus('Arrêt demandé…')};
 document.getElementById('debug-collapse-btn').onclick=()=>{const p=document.getElementById('debug-panel');p.classList.toggle('collapsed');};
 document.getElementById('debug-clear-btn').onclick=()=>{document.getElementById('tech-body').innerHTML='';document.getElementById('journal-body').innerHTML=''};
 document.getElementById('tab-journal').onclick=()=>switchTab('journal'); document.getElementById('tab-tech').onclick=()=>switchTab('tech');
 document.querySelectorAll('.preset').forEach(p=>p.onclick=()=>{document.querySelectorAll('.preset').forEach(x=>x.classList.remove('active'));p.classList.add('active');state.selectedStyle=p.dataset.style;});
-document.getElementById('nb-cases').onchange=e=>{state.nbCases=parseInt(e.target.value);updateLaunchBtn()};
+document.getElementById('nb-cases').onchange=e=>{state.nbCases=parseInt(e.target.value);updateUI()};
 updateApiPanel();
 </script>
 </body>
